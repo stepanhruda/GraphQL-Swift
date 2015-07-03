@@ -1,0 +1,29 @@
+PODS:
+  - Nimble (2.0.0-rc.1)
+  - Quick (0.4.0)
+
+DEPENDENCIES:
+  - Nimble (from `https://github.com/Quick/Nimble`, branch `swift-2.0`)
+  - Quick (from `git@github.com:Quick/Quick.git`, branch `swift-2.0`)
+
+EXTERNAL SOURCES:
+  Nimble:
+    :branch: swift-2.0
+    :git: https://github.com/Quick/Nimble
+  Quick:
+    :branch: swift-2.0
+    :git: git@github.com:Quick/Quick.git
+
+CHECKOUT OPTIONS:
+  Nimble:
+    :commit: 463b70b9d4c0d4d9879fb35e24b2d2109b648eb8
+    :git: https://github.com/Quick/Nimble
+  Quick:
+    :commit: 4609b61c8bd52ec7a4438888c7f6cb9b630537b4
+    :git: git@github.com:Quick/Quick.git
+
+SPEC CHECKSUMS:
+  Nimble: 9572458605e65c9fc5a56754ab19a970f6ab5a88
+  Quick: 5f29ead769ddfa8d3ff7a75dbcb98d838b52f53c
+
+COCOAPODS: 0.38.0.beta.1

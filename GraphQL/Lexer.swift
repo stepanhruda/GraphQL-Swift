@@ -2,14 +2,7 @@
 func lex(source: Source) -> (String.Index? throws -> Token) {
     var previousPosition = source.body.startIndex
     return { position in
-        var token: Token
-
-        do {
-            token = try Lexer.readSource(source, position: position ?? previousPosition)
-        } catch let error {
-            throw error
-        }
-
+        let token = try Lexer.readSource(source, position: position ?? previousPosition)
         previousPosition = token.end
         return token
     }
@@ -38,41 +31,34 @@ struct Lexer {
         let position = positionAfterWhitespace(body: source.body, position: position)
 
         if position >= characters.endIndex {
-            return Token(kind: .EndOfFile(), start: position, end: position)
+            return Token(kind: .EndOfFile, start: position, end: position)
         }
 
         switch characters[position] {
 
-        case "!": return Token(kind: .Bang(), start: position, end: position + 1)
-        case "$": return Token(kind: .Dollar(), start: position, end: position + 1)
-        case "(": return Token(kind: .ParenLeft(), start: position, end: position + 1)
-        case ")": return Token(kind: .ParenRight(), start: position, end: position + 1)
+        case "!": return Token(kind: .Bang, start: position, end: position + 1)
+        case "$": return Token(kind: .Dollar, start: position, end: position + 1)
+        case "(": return Token(kind: .ParenLeft, start: position, end: position + 1)
+        case ")": return Token(kind: .ParenRight, start: position, end: position + 1)
 
         case "." where characters[position + 1] == "." && characters[position + 2] == ".":
-            return Token(kind: .Spread(), start: position, end: position + 3)
+            return Token(kind: .Spread, start: position, end: position + 3)
 
-        case ":": return Token(kind: .Colon(), start: position, end: position + 1)
-        case "=": return Token(kind: .Equals(), start: position, end: position + 1)
-        case "@": return Token(kind: .At(), start: position, end: position + 1)
-        case "[": return Token(kind: .BracketLeft(), start: position, end: position + 1)
-        case "]": return Token(kind: .BracketRight(), start: position, end: position + 1)
-        case "{": return Token(kind: .BraceLeft(), start: position, end: position + 1)
-        case "|": return Token(kind: .Pipe(), start: position, end: position + 1)
-        case "}": return Token(kind: .BraceRight(), start: position, end: position + 1)
+        case ":": return Token(kind: .Colon, start: position, end: position + 1)
+        case "=": return Token(kind: .Equals, start: position, end: position + 1)
+        case "@": return Token(kind: .At, start: position, end: position + 1)
+        case "[": return Token(kind: .BracketLeft, start: position, end: position + 1)
+        case "]": return Token(kind: .BracketRight, start: position, end: position + 1)
+        case "{": return Token(kind: .BraceLeft, start: position, end: position + 1)
+        case "|": return Token(kind: .Pipe, start: position, end: position + 1)
+        case "}": return Token(kind: .BraceRight, start: position, end: position + 1)
 
         case "A"..."Z", "_", "a"..."z": return readName(source: source, position: position)
         case "-", "0"..."9":
-            do {
-                return try readNumber(source: source, position: position)
-            } catch let error {
-                throw error
-            }
+            return try readNumber(source: source, position: position)
+
         case "\"":
-            do {
-                return try readString(source: source, position: position)
-            } catch let error {
-                throw error
-            }
+            return try readString(source: source, position: position)
 
         default: throw LexerError(code: .UnexpectedCharacter, source: source, position: position)
 
@@ -90,7 +76,7 @@ struct Lexer {
 
         end--
 
-        return Token(kind: .Name(body[start...end]), start: start, end: end)
+        return Token(kind: .Name, start: start, end: end, value: body[start...end])
     }
 
     static func readNumber(source source: Source, position start: String.Index) throws -> Token {
@@ -150,7 +136,7 @@ struct Lexer {
         }
 
         let value = body[start...lastValid]
-        return Token(kind: isFloat ? .FloatValue(Float(value)!): .IntValue(Int(value)!), start: start, end: lastValid)
+        return Token(kind: isFloat ? .Float : .Int, start: start, end: lastValid, value: isFloat ? Float(value)! : Int(value)!)
     }
 
     static func readString(source source: Source, position start: String.Index) throws -> Token {
@@ -224,7 +210,7 @@ struct Lexer {
         }
 
         value += body[(alreadyProcessed + 1)..<end]
-        return Token(kind: .StringValue(value), start: start, end: end)
+        return Token(kind: .String, start: start, end: end, value: value)
     }
 
     static func positionAfterWhitespace(body body: String, position start: String.Index) -> String.Index {

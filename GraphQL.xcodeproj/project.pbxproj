@@ -14,11 +14,11 @@
 		C003DBA11B462D3900A90329 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DB9E1B462D3900A90329 /* Token.swift */; };
 		C003DBA21B462D3900A90329 /* Undefined.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DB9F1B462D3900A90329 /* Undefined.swift */; };
 		C003DBA41B46364900A90329 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DBA31B46364900A90329 /* Parser.swift */; };
-		C003DBA61B46369000A90329 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DBA51B46369000A90329 /* Document.swift */; };
 		C003DBA81B4636AC00A90329 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DBA71B4636AC00A90329 /* Lexer.swift */; };
 		C003DBAA1B4636DB00A90329 /* GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DBA91B4636DB00A90329 /* GraphQL.swift */; };
 		C003DBAC1B46ABD300A90329 /* LexerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DBAB1B46ABD300A90329 /* LexerSpec.swift */; };
 		C003DBAE1B46D49400A90329 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DBAD1B46D49400A90329 /* Validator.swift */; };
+		C00AF06C1B46FB2E00C63C13 /* AST.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00AF06B1B46FB2E00C63C13 /* AST.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,11 +43,11 @@
 		C003DB9E1B462D3900A90329 /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		C003DB9F1B462D3900A90329 /* Undefined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Undefined.swift; sourceTree = "<group>"; };
 		C003DBA31B46364900A90329 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
-		C003DBA51B46369000A90329 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		C003DBA71B4636AC00A90329 /* Lexer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		C003DBA91B4636DB00A90329 /* GraphQL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQL.swift; sourceTree = "<group>"; };
 		C003DBAB1B46ABD300A90329 /* LexerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerSpec.swift; sourceTree = "<group>"; };
 		C003DBAD1B46D49400A90329 /* Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
+		C00AF06B1B46FB2E00C63C13 /* AST.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AST.swift; sourceTree = "<group>"; };
 		FEC55DF5E2D04D9C8DCF55C4 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -111,7 +111,7 @@
 		C003DB851B462D2B00A90329 /* GraphQL */ = {
 			isa = PBXGroup;
 			children = (
-				C003DBA51B46369000A90329 /* Document.swift */,
+				C00AF06B1B46FB2E00C63C13 /* AST.swift */,
 				C003DBA91B4636DB00A90329 /* GraphQL.swift */,
 				C003DBA71B4636AC00A90329 /* Lexer.swift */,
 				C003DBA31B46364900A90329 /* Parser.swift */,
@@ -277,6 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C00AF06C1B46FB2E00C63C13 /* AST.swift in Sources */,
 				C003DBAE1B46D49400A90329 /* Validator.swift in Sources */,
 				C003DBAA1B4636DB00A90329 /* GraphQL.swift in Sources */,
 				C003DBA41B46364900A90329 /* Parser.swift in Sources */,
@@ -284,7 +285,6 @@
 				C003DBA11B462D3900A90329 /* Token.swift in Sources */,
 				C003DBA21B462D3900A90329 /* Undefined.swift in Sources */,
 				C003DBA81B4636AC00A90329 /* Lexer.swift in Sources */,
-				C003DBA61B46369000A90329 /* Document.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,32 +1,35 @@
 enum TokenKind {
-    case EndOfFile(Void)
-    case Bang(Void)
-    case Dollar(Void)
-    case ParenLeft(Void)
-    case ParenRight(Void)
-    case Spread(Void)
-    case Colon(Void)
-    case Equals(Void)
-    case At(Void)
-    case BracketLeft(Void)
-    case BracketRight(Void)
-    case BraceLeft(Void)
-    case Pipe(Void)
-    case BraceRight(Void)
-    case Name(String)
-    case Variable(String)
-    case IntValue(Int)
-    case FloatValue(Float)
-    case StringValue(String)
+    case EndOfFile
+    case Bang
+    case Dollar
+    case ParenLeft
+    case ParenRight
+    case Spread
+    case Colon
+    case Equals
+    case At
+    case BracketLeft
+    case BracketRight
+    case BraceLeft
+    case Pipe
+    case BraceRight
+    case Name
+    case Variable
+    case Int
+    case Float
+    case String
 }
-
 
 struct Token {
     let kind: TokenKind
     let start: String.Index
     let end: String.Index
-}
+    let value: Any?
 
-extension Token {
-
+    init(kind: TokenKind, start: String.Index, end: String.Index, value: Any? = nil) {
+        self.kind = kind
+        self.start = start
+        self.end = end
+        self.value = value
+    }
 }

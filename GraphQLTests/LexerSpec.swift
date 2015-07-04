@@ -13,10 +13,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = Lexer.readName(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .Name(let value): expect(value).to(equal("h"))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Name))
+                expect(token.value as? String).to(equal("h"))
             }
 
             it("reads a single-character name terminated by a space") {
@@ -24,10 +22,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = Lexer.readName(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .Name(let value): expect(value).to(equal("h"))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Name))
+                expect(token.value as? String).to(equal("h"))
             }
 
             it("reads a multi-character name") {
@@ -35,10 +31,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = Lexer.readName(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .Name(let value): expect(value).to(equal("hello"))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Name))
+                expect(token.value as? String).to(equal("hello"))
             }
 
             it("reads a multi-character name terminated by a space") {
@@ -46,12 +40,9 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = Lexer.readName(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .Name(let value): expect(value).to(equal("hello"))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Name))
+                expect(token.value as? String).to(equal("hello"))
             }
-
         }
 
         describe("readNumber") {
@@ -61,10 +52,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .IntValue(let value): expect(value).to(equal(5))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Int))
+                expect(token.value as? Int).to(equal(5))
             }
 
             it("reads a longer integer") {
@@ -72,10 +61,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .IntValue(let value): expect(value).to(equal(535056544))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Int))
+                expect(token.value as? Int).to(equal(535056544))
             }
 
             it("reads a short negative integer") {
@@ -83,10 +70,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .IntValue(let value): expect(value).to(equal(-5))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Int))
+                expect(token.value as? Int).to(equal(-5))
             }
 
             it("reads a longer negative integer") {
@@ -94,10 +79,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .IntValue(let value): expect(value).to(equal(-535056544))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Int))
+                expect(token.value as? Int).to(equal(-535056544))
             }
 
             it("reads a short float") {
@@ -105,10 +88,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .FloatValue(let value): expect(value).to(equal(5.2))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Float))
+                expect(token.value as? Float).to(equal(5.2))
             }
 
             it("reads a longer float") {
@@ -116,21 +97,17 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .FloatValue(let value): expect(value).to(equal(5534653.22463))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Float))
+                expect(token.value as? Float).to(equal(5534653.22463))
             }
 
             it("reads a short negative float") {
-                let string = "-5.22"
+                let string = "-5.2"
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .FloatValue(let value): expect(value).to(equal(-5.22))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Float))
+                expect(token.value as? Float).to(equal(-5.2))
             }
 
             it("reads a longer negative float") {
@@ -138,10 +115,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .FloatValue(let value): expect(value).to(equal(-5534653.22463))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Float))
+                expect(token.value as? Float).to(equal(-5534653.22463))
             }
 
             it("reads an integer followed by non-numbers") {
@@ -149,10 +124,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .IntValue(let value): expect(value).to(equal(5))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Int))
+                expect(token.value as? Int).to(equal(5))
             }
 
             it("reads a float followed by non-numbers") {
@@ -160,10 +133,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readNumber(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .FloatValue(let value): expect(value).to(equal(5.3))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.Float))
+                expect(token.value as? Float).to(equal(5.3))
             }
         }
 
@@ -173,10 +144,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readString(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .StringValue(let value): expect(value).to(equal("hello dolly"))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.String))
+                expect(token.value as? String).to(equal("hello dolly"))
             }
 
             it("reads escaped characters such as newline") {
@@ -184,10 +153,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readString(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .StringValue(let value): expect(value).to(equal("hello\\ndolly"))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.String))
+                expect(token.value as? String).to(equal("hello\\ndolly"))
             }
 
             it("reads unicode characters in \\u1234 format") {
@@ -195,10 +162,8 @@ class LexerSpec: QuickSpec {
                 let source = Source(body: string)
                 let token = try! Lexer.readString(source: source, position: string.startIndex)
 
-                switch token.kind {
-                case .StringValue(let value): expect(value).to(equal("hello dolly"))
-                default: fail()
-                }
+                expect(token.kind).to(equal(TokenKind.String))
+                expect(token.value as? String).to(equal("hello dolly"))
             }
         }
 

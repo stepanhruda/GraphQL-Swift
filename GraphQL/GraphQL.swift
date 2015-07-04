@@ -22,11 +22,8 @@ struct GraphQLResult {
 
 func graphql(schema: GraphQLSchema, requestString: String, rootObject: Any?, variableValues: Any, operationName: String?, completion: GraphQLResult -> Void) throws {
     let source = Source(body: requestString, name: "GraphQL request")
-    do {
-        let _ = try parse(source)
-    } catch let error {
-        throw error
-    }
+    let _ = try parse(source)
+
 }
 
 

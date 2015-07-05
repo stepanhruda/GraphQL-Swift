@@ -149,13 +149,19 @@ class Parser {
             try expect(.BracketRight)
             type = ListType(type: type, location: locateWithStart(start))
         } else {
-            type = try parseName()
+            type = try parseNamedType()
         }
         if try skip(.Bang) {
             return NonNullType(type: type, location: locateWithStart(start))
         } else {
             return type
         }
+    }
+
+    func parseNamedType() throws -> NamedType {
+        let start = currentToken.start
+        let token = try expect(.Name)
+        return NamedType(value: token.value as! String, location: locateWithStart(start))
     }
 
     func parseFragmentDefinition() throws -> FragmentDefinition {

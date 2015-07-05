@@ -13,7 +13,6 @@ protocol Definition {
 
 }
 
-
 struct OperationDefinition: Definition {
     let operation: String
     let name: Name?
@@ -142,7 +141,10 @@ struct Argument {
 
 protocol Type { }
 
-extension Name: Type { }
+struct NamedType: Type {
+    let value: String
+    let location: Location?
+}
 
 struct NonNullType: Type {
     let type: Type

@@ -15,7 +15,12 @@ protocol Definition {
 
 
 struct OperationDefinition: Definition {
-    
+    let operation: String
+    let name: Name?
+    let variableDefinitions: [VariableDefinition]?
+    let directives: [Directive]
+    let selectionSet: SelectionSet
+    let location: Location?
 }
 
 struct Directive {
@@ -28,7 +33,14 @@ struct FragmentDefinition: Definition {
     let name: Name
     let typeCondition: (Token, Name)
     let directives: [Directive]
-    let selectionSet: Any
+    let selectionSet: SelectionSet
+    let location: Location?
+}
+
+struct VariableDefinition: Definition {
+    let variable: Variable
+    let type: (Token, Any)
+    let defaultValue: Value?
     let location: Location?
 }
 
@@ -41,8 +53,17 @@ protocol Value {
     
 }
 
+protocol Selection {
+
+}
+
+protocol Fragment: Selection {
+
+}
+
 struct SelectionSet {
-    
+    let selections: [Selection]
+    let location: Location?
 }
 
 struct Array: Value {
@@ -88,5 +109,47 @@ struct BoolValue: Value {
 
 struct EnumValue: Value {
     let value: String
+    let location: Location?
+}
+
+struct Field: Selection {
+    let alias: Name?
+    let name: Name
+    let arguments: [Argument]
+    let directives: [Directive]
+    let selectionSet: SelectionSet?
+    let location: Location?
+}
+
+struct FragmentSpread: Fragment {
+    let name: Name
+    let directives: [Directive]
+    let location: Location?
+}
+
+struct InlineFragment: Fragment {
+    let typeCondition: Name
+    let directives: [Directive]
+    let selectionSet: SelectionSet
+    let location: Location?
+}
+
+struct Argument {
+    let name: Name
+    let value: (Token, Value)
+    let location: Location?
+}
+
+protocol Type { }
+
+extension Name: Type { }
+
+struct NonNullType: Type {
+    let type: Type
+    let location: Location?
+}
+
+struct ListType: Type {
+    let type: Type
     let location: Location?
 }

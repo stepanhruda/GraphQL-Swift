@@ -30,7 +30,7 @@ struct Directive {
 
 struct FragmentDefinition: Definition {
     let name: Name
-    let typeCondition: (Token, Name)
+    let typeCondition: Name
     let directives: [Directive]
     let selectionSet: SelectionSet
     let location: Location?
@@ -38,7 +38,7 @@ struct FragmentDefinition: Definition {
 
 struct VariableDefinition: Definition {
     let variable: Variable
-    let type: (Token, Any)
+    let type: Any
     let defaultValue: Value?
     let location: Location?
 }
@@ -77,7 +77,7 @@ struct Object: Value {
 
 struct ObjectField: Value {
     let name: Name
-    let value: (Token, Value)
+    let value: Value
     let location: Location?
 }
 
@@ -135,7 +135,7 @@ struct InlineFragment: Fragment {
 
 struct Argument {
     let name: Name
-    let value: (Token, Value)
+    let value: Value
     let location: Location?
 }
 

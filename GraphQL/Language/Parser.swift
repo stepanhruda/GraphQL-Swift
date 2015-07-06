@@ -1,6 +1,6 @@
 func parse(source: Source, options: ParseOptions = ParseOptions()) throws -> Document {
-    let lexer = lex(source)
-    let parser = Parser(lexer: lexer, source: source, options: options, previousEnd: source.body.startIndex, token: try lexer(source.body.startIndex))
+    let lexer = Lexer.functionForSource(source)
+    let parser = Parser(lexer: lexer, source: source, options: options, previousEnd: source.body.startIndex, token: try lexer(nil))
     return try parser.parseDocument()
 }
 
@@ -28,8 +28,8 @@ struct ParserError: ErrorType {
 
 struct ParseOptions: OptionSetType {
     let rawValue: UInt
-    static let NoLocation = ParseOptions(rawValue: 1)
-    static let NoSource = ParseOptions(rawValue: 2)
+    static let NoLocation = ParseOptions(rawValue: 1 << 0)
+    static let NoSource = ParseOptions(rawValue: 1 << 1)
 }
 
 enum Keyword: String {
@@ -169,10 +169,15 @@ class Parser {
         try expectKeyword(.Fragment)
         return FragmentDefinition(
             name: try parseName(),
-            typeCondition: (try expectKeyword(.On), try parseName()),
+            typeCondition: try parseTypeCondition(),
             directives: try parseDirectives(),
             selectionSet: try parseSelectionSet(),
             location: locateWithStart(start))
+    }
+
+    func parseTypeCondition() throws -> Name {
+        try expectKeyword(.On)
+        return try parseName()
     }
 
     func expectKeyword(keyword: Keyword) throws -> Token {
@@ -192,8 +197,9 @@ class Parser {
 
     func expect(kind: TokenKind) throws -> Token {
         if currentToken.kind == kind {
+            let token = currentToken
             try advance()
-            return currentToken
+            return token
         } else {
             throw ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Expected \(kind), found \(currentToken.kind)")
         }
@@ -264,8 +270,13 @@ class Parser {
         let start = currentToken.start
         return Argument(
             name: try parseName(),
-            value: (try expect(.Colon), try parseValue(isConst: false)),
+            value: try parseArgumentValue(),
             location: locateWithStart(start))
+    }
+
+    func parseArgumentValue() throws -> Value {
+        try expect(.Colon)
+        return try parseValue(isConst: false)
     }
 
     func parseDirectives() throws -> [Directive] {
@@ -373,8 +384,13 @@ class Parser {
 
         return ObjectField(
             name: name,
-            value: (try expect(.Colon), try parseValue(isConst: isConst)),
+            value: try parseObjectFieldValue(isConst: isConst),
             location: locateWithStart(start))
+    }
+
+    func parseObjectFieldValue(isConst isConst: Bool) throws -> Value {
+        try expect(.Colon)
+        return try parseValue(isConst: isConst)
     }
 
     func parseConstValue() throws -> Value {
@@ -386,7 +402,7 @@ class Parser {
     }
 
     func unexpectedToken() throws {
-
+        throw ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Unexpected \(currentToken)")
     }
 
     func parseZeroOrMoreBetweenDelimiters<T>(left left: TokenKind, function: () throws -> T, right: TokenKind) throws -> [T] {
@@ -395,7 +411,6 @@ class Parser {
         while try !skip(right) {
             nodes.append(try function())
         }
-        try expect(right)
         return nodes
     }
 
@@ -405,7 +420,6 @@ class Parser {
         while try !skip(right) {
             nodes.append(try function())
         }
-        try expect(right)
         return nodes
     }
 

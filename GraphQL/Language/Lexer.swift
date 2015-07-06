@@ -1,13 +1,3 @@
-// TODO: Make this an object?
-func lex(source: Source) -> (String.Index? throws -> Token) {
-    var previousPosition = source.body.startIndex
-    return { position in
-        let token = try Lexer.readSource(source, position: position ?? previousPosition)
-        previousPosition = token.end
-        return token
-    }
-}
-
 enum LexerErrorCode: Int {
     case UnexpectedCharacter
     case InvalidNumber
@@ -25,6 +15,15 @@ struct LexerError: ErrorType {
 }
 
 struct Lexer {
+    static func functionForSource(source: Source) -> (String.Index? throws -> Token) {
+        var previousPosition = source.body.startIndex
+        return { position in
+            let token = try readSource(source, position: position ?? previousPosition)
+            previousPosition = token.end
+            return token
+        }
+    }
+
     static func readSource(source: Source, position: String.Index) throws -> Token {
         let characters = source.body.characters
 
@@ -74,22 +73,35 @@ struct Lexer {
             end++
         }
 
-        end--
-
-        return Token(kind: .Name, start: start, end: end, value: body[start...end])
+        return Token(kind: .Name, start: start, end: end, value: body[start..<end])
     }
 
     static func readNumber(source source: Source, position start: String.Index) throws -> Token {
         let body = source.body
-        var lastValid = start
+        var end = start
         var generator = body[start..<body.endIndex].generate()
+        var lastCharacterInvalid = false
         var isFloat = false
         let nextCharacter: Void -> Character? = {
-            lastValid++
-            return generator.next()
+            let next = generator.next()
+            guard let _ = next else { return next }
+            end++
+            return next
         }
+
         var character = nextCharacter()
-        lastValid--
+
+        let readDigits: Void -> Void = {
+            repeat {
+                character = nextCharacter()
+                guard let tested = character, case "0"..."9" = tested else {
+                    if end < body.endIndex {
+                        lastCharacterInvalid = true
+                    }
+                    break
+                }
+            } while true
+        }
 
         if character == "-" {
             character = nextCharacter()
@@ -98,45 +110,42 @@ struct Lexer {
         if character == "0" {
             character = nextCharacter()
         } else if let tested = character, case "1"..."9" = tested {
-            repeat {
-                character = nextCharacter()
-                guard let tested = character, case "0"..."9" = tested else { lastValid--; break }
-            } while true
+            readDigits()
         } else {
-            throw LexerError(code: .InvalidNumber, source: source, position: lastValid + 1)
+            throw LexerError(code: .InvalidNumber, source: source, position: end)
         }
 
         if character == "." {
             isFloat = true
+            lastCharacterInvalid = false
             character = nextCharacter()
 
             if let tested = character, case "0"..."9" = tested {
-                repeat {
-                    character = nextCharacter()
-                    guard let tested = character, case "0"..."9" = tested else { break }
-                } while true
+                readDigits()
             } else {
-                throw LexerError(code: .InvalidNumber, source: source, position: lastValid + 1)
+                throw LexerError(code: .InvalidNumber, source: source, position: end)
             }
 
             if character == "e" {
+                lastCharacterInvalid = false
                 character = nextCharacter()
 
                 if character == "-" {
+                    character = nextCharacter()
                 }
                 if let tested = character, case "0"..."9" = tested {
-                    repeat {
-                        character = nextCharacter()
-                        guard let tested = character, case "0"..."9" = tested else { lastValid--; break }
-                    } while true
+                    readDigits()
                 } else {
-                    throw LexerError(code: .InvalidNumber, source: source, position: lastValid + 1)
+                    throw LexerError(code: .InvalidNumber, source: source, position: end)
                 }
             }
         }
 
-        let value = body[start...lastValid]
-        return Token(kind: isFloat ? .Float : .Int, start: start, end: lastValid, value: isFloat ? Float(value)! : Int(value)!)
+        if lastCharacterInvalid { end-- }
+
+        let value = body[start..<end]
+        // IMPROVEMENT: Raise error if the number cannot be converted
+        return Token(kind: isFloat ? .Float : .Int, start: start, end: end, value: isFloat ? Float(value)! : Int(value)!)
     }
 
     static func readString(source source: Source, position start: String.Index) throws -> Token {

@@ -182,11 +182,12 @@ class Parser {
 
     func expectKeyword(keyword: Keyword) throws -> Token {
         guard currentToken.kind == .Name,
-            let value = currentToken.value as? String where
-            value == keyword.rawValue else {
+            let value = currentToken.value as? String where value == keyword.rawValue else {
             throw ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Expected \(keyword.rawValue), found \(currentToken)")
         }
-        return currentToken
+        let token = currentToken
+        try advance()
+        return token
     }
 
     func parseName() throws -> Name {

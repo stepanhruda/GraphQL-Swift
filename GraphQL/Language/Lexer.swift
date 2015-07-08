@@ -145,6 +145,7 @@ struct Lexer {
 
         let value = body[start..<end]
         // IMPROVEMENT: Raise error if the number cannot be converted
+        // IMPROVEMENT: Add support for Double instead of Float
         return Token(kind: isFloat ? .Float : .Int, start: start, end: end, value: isFloat ? Float(value)! : Int(value)!)
     }
 
@@ -219,7 +220,7 @@ struct Lexer {
         }
 
         value += body[(alreadyProcessed + 1)..<end]
-        return Token(kind: .String, start: start, end: end, value: value)
+        return Token(kind: .String, start: start, end: end + 1, value: value)
     }
 
     static func positionAfterWhitespace(body body: String, position start: String.Index) -> String.Index {

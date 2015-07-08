@@ -52,7 +52,7 @@ class LexerSpec: QuickSpec {
                 let (token, startIndex) = try! lex("\"simple\"")
                 expect(token.kind) == TokenKind.String
                 expect(token.start) == startIndex
-                expect(token.end) == startIndex + 7
+                expect(token.end) == startIndex + 8
                 expect(token.value as? String) == "simple"
             }
 
@@ -175,7 +175,6 @@ class LexerSpec: QuickSpec {
                 expect(token.value as? Float) == -5534653.22463
             }
 
-            // TODO: Figure out this syntax in Swift
             it("reads numbers with short exponent notation") {
                 let source = Source(body: "-1.123e4")
                 let token = try! Lexer.readNumber(source: source, position: source.body.startIndex)
@@ -243,6 +242,8 @@ class LexerSpec: QuickSpec {
 
                 expect(token.kind) == TokenKind.String
                 expect(token.value as? String) == "hello dolly"
+                expect(token.start) == string.startIndex
+                expect(token.end) == string.endIndex
             }
 
             it("reads escaped characters such as newline") {
@@ -252,6 +253,8 @@ class LexerSpec: QuickSpec {
 
                 expect(token.kind) == TokenKind.String
                 expect(token.value as? String) == "hello\\ndolly"
+                expect(token.start) == string.startIndex
+                expect(token.end) == string.endIndex
             }
 
             it("reads unicode characters in \\u1234 format") {
@@ -261,6 +264,8 @@ class LexerSpec: QuickSpec {
 
                 expect(token.kind) == TokenKind.String
                 expect(token.value as? String) == "hello dolly"
+                expect(token.start) == string.startIndex
+                expect(token.end) == string.endIndex
             }
 
             // TODO: Add string error handling

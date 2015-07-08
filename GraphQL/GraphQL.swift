@@ -35,9 +35,9 @@ struct GraphQLComposedError: ErrorType {
 func graphql(schema: GraphQLSchema, requestString: String, rootObject: Any?, variableValues: Any, operationName: String?, completion: GraphQLResult -> Void) throws {
     do {
         let source = Source(body: requestString, name: "GraphQL request")
-        let ast = try parse(source)
-        try validateDocument(ast, schema: schema)
-        execute(schema: schema, rootObject: rootObject, document: ast, operationName: operationName, variableValues: variableValues)
+        let document = try parse(source)
+        try validateDocument(document, schema: schema)
+        execute(schema: schema, rootObject: rootObject, document: document, operationName: operationName, variableValues: variableValues)
     } catch let error {
         // TODO: Error processing
         throw error

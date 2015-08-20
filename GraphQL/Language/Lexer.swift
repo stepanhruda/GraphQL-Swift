@@ -6,9 +6,6 @@ enum LexerErrorCode: Int {
 }
 
 struct LexerError: ErrorType {
-    var _domain: String { get { return "technology.stepan.GraphQL-Swift.Lexer" } }
-    var _code: Int { get { return code.rawValue } }
-
     let code: LexerErrorCode
     let source: Source
     let position: String.Index

@@ -8,9 +8,6 @@ enum GraphQLFormattedErrorCode: Int {
 }
 
 struct GraphQLFormattedError: ErrorType {
-    var _domain: String { get { return "technology.stepan.GraphQL-Swift" } }
-    var _code: Int { get { return code.rawValue } }
-
     let code: GraphQLFormattedErrorCode
 }
 
@@ -24,9 +21,6 @@ enum GraphQLComposedErrorCode: Int {
 }
 
 struct GraphQLComposedError: ErrorType {
-    var _domain: String { get { return "technology.stepan.GraphQL-Swift" } }
-    var _code: Int { get { return code.rawValue } }
-
     let code: GraphQLComposedErrorCode
     let errors: [ErrorType]
 }

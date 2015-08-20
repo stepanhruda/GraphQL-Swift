@@ -4,9 +4,6 @@ enum ParserErrorCode: Int {
 }
 
 struct ParserError: ErrorType {
-    var _domain: String { get { return "technology.stepan.GraphQL-Swift.Parser" } }
-    var _code: Int { get { return code.rawValue } }
-
     let code: ParserErrorCode
     let source: Source
     let position: String.Index

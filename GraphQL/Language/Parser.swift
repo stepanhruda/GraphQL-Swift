@@ -1,9 +1,3 @@
-func parse(source: Source, options: ParseOptions = ParseOptions()) throws -> Document {
-    let lexer = Lexer.functionForSource(source)
-    let parser = Parser(lexer: lexer, source: source, options: options, previousEnd: source.body.startIndex, token: try lexer(nil))
-    return try parser.parseDocument()
-}
-
 enum ParserErrorCode: Int {
     case UnexpectedToken
     case DuplicateInputObjectField
@@ -45,6 +39,13 @@ class Parser {
     let options: ParseOptions
     var previousEnd: String.Index
     var currentToken: Token
+
+    static func parse(source: Source, options: ParseOptions = ParseOptions()) throws -> Document {
+        let lexer = Lexer.functionForSource(source)
+        let parser = Parser(lexer: lexer, source: source, options: options, previousEnd: source.body.startIndex, token: try lexer(nil))
+        return try parser.parseDocument()
+    }
+
 
     init(lexer: String.Index? throws -> Token, source: Source, options: ParseOptions, previousEnd: String.Index, token: Token) {
         self.lexer = lexer

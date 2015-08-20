@@ -15,7 +15,7 @@ class ParserSpec: QuickSpec {
                     "    name\n" +
                     "  }\n" +
                 "}\n"
-                let document = try! parse(Source(body: string))
+                let document = try! Parser.parse(Source(body: string))
 
                 expect(document.definitions.count) == 1
                 expect(document.definitions.first is OperationDefinition).to(beTrue())
@@ -46,7 +46,7 @@ class ParserSpec: QuickSpec {
             it("parses the kitchen-sink example") {
                 let path = NSBundle(forClass: self.dynamicType).pathForResource("kitchen-sink", ofType: "graphql")
                 let kitchenSink = try! NSString(contentsOfFile: path!, encoding: NSUTF8StringEncoding)
-                let document = try! parse(Source(body: kitchenSink as String))
+                let document = try! Parser.parse(Source(body: kitchenSink as String))
                 expect(document).toNot(beNil())
             }
         }

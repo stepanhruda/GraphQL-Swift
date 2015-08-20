@@ -1,3 +1,3 @@
-func execute(schema schema: GraphQLSchema, rootObject: Any?, document: Document, operationName: Any?, variableValues: Any?) {
+func execute(schema schema: GraphQLSchema, rootValue: Any?, document: Document, operationName: Any?, variableValues: Any?) {
 
 }

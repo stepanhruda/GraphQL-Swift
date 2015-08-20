@@ -68,7 +68,7 @@ struct Lexer {
         let body = source.body
         var end = start
 
-        for character in body[start..<body.endIndex].generate() {
+        for character in body[start..<body.endIndex].characters.generate() {
             guard character.isValidNameCharacter else { break }
             end++
         }
@@ -79,7 +79,7 @@ struct Lexer {
     static func readNumber(source source: Source, position start: String.Index) throws -> Token {
         let body = source.body
         var end = start
-        var generator = body[start..<body.endIndex].generate()
+        var generator = body[start..<body.endIndex].characters.generate()
         var lastCharacterInvalid = false
         var isFloat = false
         let nextCharacter: Void -> Character? = {
@@ -157,7 +157,7 @@ struct Lexer {
         var escapingCharacters = false
         var charactersToSkip = 0
 
-        lexing: for character in body[(start + 1)..<body.endIndex].generate() {
+        lexing: for character in body[(start + 1)..<body.endIndex].characters.generate() {
             end++
 
             if (charactersToSkip > 0) {
@@ -227,7 +227,7 @@ struct Lexer {
         var position = start
         var insideComment = false
 
-        search: for character in body[start..<body.endIndex].generate() {
+        search: for character in body[start..<body.endIndex].characters.generate() {
             if (!insideComment) {
                 switch character {
                 case " ", ",", "\t"..."\r", "\u{2028}", "\u{2029}" : position++

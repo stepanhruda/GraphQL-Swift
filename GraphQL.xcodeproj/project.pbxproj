@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B11FD2C941B8EDFE93A72538 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEC55DF5E2D04D9C8DCF55C4 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		B11FD2C941B8EDFE93A72538 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEC55DF5E2D04D9C8DCF55C4 /* Pods.framework */; };
 		C003DB871B462D2B00A90329 /* GraphQL.h in Headers */ = {isa = PBXBuildFile; fileRef = C003DB861B462D2B00A90329 /* GraphQL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C003DB8E1B462D2B00A90329 /* GraphQL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C003DB831B462D2B00A90329 /* GraphQL.framework */; };
 		C003DBA11B462D3900A90329 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DB9E1B462D3900A90329 /* Token.swift */; };

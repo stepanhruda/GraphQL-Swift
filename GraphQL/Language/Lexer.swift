@@ -247,11 +247,11 @@ struct Lexer {
 
 
 func + (left: String.Index, right: Int) -> String.Index {
-    return advance(left, right)
+    return left.advancedBy(right)
 }
 
 func - (left: String.Index, right: Int) -> String.Index {
-    return advance(left, -right)
+    return left.advancedBy(-right)
 }
 
 extension Character {

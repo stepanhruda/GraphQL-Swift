@@ -4,13 +4,19 @@ struct Location {
     let source: Source?
 }
 
-struct Document {
+struct Document: Node {
     let definitions: [Definition]
     let location: Location?
+
+    var type: NodeType { return .Any }
 }
 
-protocol Definition {
+protocol Definition: Node {
 
+}
+
+extension Definition {
+    var type: NodeType { return .Any }
 }
 
 struct OperationDefinition: Definition {
@@ -46,6 +52,14 @@ struct VariableDefinition: Definition {
 struct Name {
     let value: String
     let location: Location?
+}
+
+func ==(a: Name, b: Name) -> Bool {
+    return a.value == b.value
+}
+
+extension Name: Hashable {
+    var hashValue: Int { return value.hashValue }
 }
 
 protocol Value {

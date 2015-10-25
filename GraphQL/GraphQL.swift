@@ -3,12 +3,8 @@ struct GraphQLSchema {
 
 }
 
-enum GraphQLFormattedErrorCode: Int {
+enum GraphQLFormattedError: ErrorType {
     case Unknown
-}
-
-struct GraphQLFormattedError: ErrorType {
-    let code: GraphQLFormattedErrorCode
 }
 
 struct GraphQLResult {
@@ -16,13 +12,8 @@ struct GraphQLResult {
     let errors: [GraphQLFormattedError]?
 }
 
-enum GraphQLComposedErrorCode: Int {
-    case MultipleErrors
-}
-
-struct GraphQLComposedError: ErrorType {
-    let code: GraphQLComposedErrorCode
-    let errors: [ErrorType]
+enum GraphQLComposedError: ErrorType {
+    case MultipleErrors([ErrorType])
 }
 
 
@@ -30,7 +21,7 @@ func graphql(schema: GraphQLSchema, requestString: String = "", rootValue: Any?,
     do {
         let source = Source(body: requestString, name: "GraphQL request")
         let document = try Parser.parse(source)
-        try validateDocument(document, schema: schema)
+        try document.validateForSchema(schema)
         execute(schema: schema, rootValue: rootValue, document: document, operationName: operationName, variableValues: variableValues)
     } catch let error {
         // TODO: Error processing

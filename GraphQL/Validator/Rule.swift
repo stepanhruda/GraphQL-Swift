@@ -1,16 +1,10 @@
 let allRules: [ValidationContext -> Rule] = [
-    UniqueOperationNames.init,
+//    UniqueOperationNames.init,
 ]
 
-class Rule {
-    let context: ValidationContext
-    var visitSpreadFragments: Bool { return false }
+protocol Rule {
+    var context: ValidationContext { get }
+    init(context: ValidationContext)
 
-    required init(context: ValidationContext) {
-        self.context = context
-    }
-}
-
-protocol Visiting {
     func visitor() -> Visitor
 }

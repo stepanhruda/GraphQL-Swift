@@ -1,45 +1,75 @@
+protocol Node {
+    var type: NodeType { get }
+}
+
+// TODO: remove this
+extension Node {
+    var type: NodeType { return .Any }
+}
+
+protocol Tree: Node {
+    var children: [Node] { get }
+    mutating func removeChildAtIndex(index: Int)
+    mutating func replaceChildAtIndex(index: Int, newValue: Node)
+}
+
+extension Tree {
+    mutating func removeChildAtIndex(index: Int) {}
+    mutating func replaceChildAtIndex(index: Int, newValue: Node) {}
+}
+
 struct Location {
     let start: String.Index
     let end: String.Index
     let source: Source?
 }
 
-struct Document: Node {
-    let definitions: [Definition]
+struct Document: Tree {
+    var definitions: [Definition]
     let location: Location?
 
-    var type: NodeType { return .Any }
+    var type: NodeType { return .Document }
+
+    var children: [Node] { return definitions.map { $0 as Node } }
+
+    mutating func removeChildAtIndex(index: Int) {
+        definitions.removeAtIndex(index)
+    }
+    mutating func replaceChildAtIndex(index: Int, newValue: Node) {
+        definitions[index] = newValue as! Definition
+    }
 }
 
 protocol Definition: Node {
-
 }
 
-extension Definition {
-    var type: NodeType { return .Any }
-}
-
-struct OperationDefinition: Definition {
+struct OperationDefinition: Definition, Tree {
     let operation: String
     let name: Name?
     let variableDefinitions: [VariableDefinition]?
     let directives: [Directive]
     let selectionSet: SelectionSet
     let location: Location?
+
+    var type: NodeType { return .OperationDefinition }
+
+    var children: [Node] { return directives.map { $0 as Node } }
 }
 
-struct Directive {
+struct Directive: Node {
     let name: Name
     let value: Value?
     let location: Location?
 }
 
-struct FragmentDefinition: Definition {
+struct FragmentDefinition: Definition, Tree {
     let name: Name
     let typeCondition: Name
     let directives: [Directive]
     let selectionSet: SelectionSet
     let location: Location?
+
+    var children: [Node] { return directives.map { $0 as Node } }
 }
 
 struct VariableDefinition: Definition {
@@ -49,7 +79,7 @@ struct VariableDefinition: Definition {
     let location: Location?
 }
 
-struct Name {
+struct Name: Node {
     let value: String
     let location: Location?
 }
@@ -62,11 +92,11 @@ extension Name: Hashable {
     var hashValue: Int { return value.hashValue }
 }
 
-protocol Value {
+protocol Value: Node {
     
 }
 
-protocol Selection {
+protocol Selection: Node {
 
 }
 
@@ -74,19 +104,25 @@ protocol Fragment: Selection {
 
 }
 
-struct SelectionSet {
+struct SelectionSet: Tree {
     let selections: [Selection]
     let location: Location?
+
+    var children: [Node] { return selections.map { $0 as Node } }
 }
 
-struct Array: Value {
+struct Array: Value, Tree {
     let values: [Value]
     let location: Location?
+
+    var children: [Node] { return values.map { $0 as Node } }
 }
 
 struct Object: Value {
     let fields: [ObjectField]
     let location: Location?
+
+    var children: [Node] { return fields.map { $0 as Node } }
 }
 
 struct ObjectField: Value {
@@ -125,35 +161,42 @@ struct EnumValue: Value {
     let location: Location?
 }
 
-struct Field: Selection {
+struct Field: Selection, Tree {
     let alias: Name?
     let name: Name
     let arguments: [Argument]
     let directives: [Directive]
     let selectionSet: SelectionSet?
     let location: Location?
+
+    var children: [Node] { return directives.map { $0 as Node } }
 }
 
-struct FragmentSpread: Fragment {
+struct FragmentSpread: Fragment, Tree {
     let name: Name
     let directives: [Directive]
     let location: Location?
+
+    var children: [Node] { return directives.map { $0 as Node } }
 }
 
-struct InlineFragment: Fragment {
+struct InlineFragment: Fragment, Tree {
     let typeCondition: Name
     let directives: [Directive]
     let selectionSet: SelectionSet
     let location: Location?
+
+    // TODO: Should SelectionSet be included?
+    var children: [Node] { return directives.map { $0 as Node } }
 }
 
-struct Argument {
+struct Argument: Node {
     let name: Name
     let value: Value
     let location: Location?
 }
 
-protocol Type { }
+protocol Type: Node { }
 
 struct NamedType: Type {
     let value: String

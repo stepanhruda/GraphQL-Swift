@@ -2,49 +2,93 @@
 enum VisitAction {
     case Continue
     case Stop
-    /// Skip doesn't have any effect when returned from a "leave" closure.
+    /// Skip doesn't make sense when returned from a "leave" closure and causes a fatal error.
     case SkipSubtree
-    case ReplaceValue(Any)
+    case ReplaceValue(Node)
     case RemoveValue
-}
-
-protocol Node {
-    var type: NodeType { get }
 }
 
 enum NodeType {
     case Any
+    case Document
     case OperationDefinition
     case FragmentDefinition
     case FragmentSpread
 }
 
-enum Visitor {
-    case OnEnter(NodeType, Node throws -> VisitAction)
-    case OnEnterAndLeave(NodeType, Node throws -> VisitAction, Node throws -> VisitAction)
+enum VisitError: ErrorType {
+    case SkipSubtree
+    case Stop
 }
 
-let queryDocumentKeys: [String:String] = [:]
+struct Visitor {
+    let nodeType: NodeType
+    let enter: (Node throws -> VisitAction)?
+    let leave: (Node throws -> VisitAction)?
 
-func visit(node: Node, _ visitor: Visitor, keymap: [String:String] = queryDocumentKeys) -> Node {
-//    let visitorKeys = keymap
-//
-    var keys: [Node] = [ node ]
+    init(nodeType: NodeType, enter: (Node throws -> VisitAction)? = nil, leave: (Node throws -> VisitAction)? = nil) {
+        self.nodeType = nodeType
+        self.enter = enter
+        self.leave = leave
+    }
+}
 
-    let edits: [Any] = []
-    let resultNode = node
-    var index = -1
+extension Node {
+    func visit(visitor: Visitor) throws -> Node? {
 
-    let stack: ([Any], Int, [String:String], Any)? = nil
+        guard var afterEntering = try enter(visitor) else { return nil }
 
-    repeat {
-        index++
+        if var tree = afterEntering as? Tree {
+            try tree.visitChildren(visitor)
+            afterEntering = tree
+        }
 
+        guard let afterLeaving = try afterEntering.leave(visitor) else { return nil }
 
-    } while stack != nil
-
-    if edits.count > 0 {
+        return afterLeaving
     }
 
-    return resultNode
+    private func enter(visitor: Visitor) throws -> Node? {
+        guard let enter = visitor.enter else { return self }
+
+        switch try enter(self) {
+        case .Continue: return self
+        case .Stop: throw VisitError.Stop
+        case .SkipSubtree: throw VisitError.SkipSubtree
+        case .ReplaceValue(let newValue): return newValue
+        case .RemoveValue: return nil
+        }
+    }
+
+    private func leave(visitor: Visitor) throws -> Node? {
+        guard let leave = visitor.leave else { return self }
+
+        switch try leave(self) {
+        case .Continue: return self
+        case .Stop: throw VisitError.Stop
+        case .SkipSubtree: fatalError("Developer error: there is no point in skipping a subtree after it has been visited")
+        case .ReplaceValue(let newValue): return newValue
+        case .RemoveValue: return nil
+        }
+    }
+}
+
+extension Tree {
+
+    private mutating func visitChildren(visitor: Visitor) throws {
+        var currentIndex = 0
+        while currentIndex < children.count {
+            let child = children[currentIndex]
+            let childModifiedByVisit = try child.visit(visitor)
+
+            if let childModifiedByVisit = childModifiedByVisit {
+                replaceChildAtIndex(currentIndex, newValue: childModifiedByVisit)
+                currentIndex++
+            } else {
+                removeChildAtIndex(currentIndex)
+                // Do not increase current index, everything has shifted down by one because the child was removed.
+                // Keeping the same index will in fact visit the next child (or break the loop if it was the last child).
+            }
+        }
+    }
 }

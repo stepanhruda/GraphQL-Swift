@@ -1,13 +1,25 @@
 public indirect enum SchemaFieldType {
+    case Scalar(SchemaScalarType)
+    case Object(SchemaObjectType)
+    case Interface(SchemaInterface)
+    case Union(SchemaUnion)
+    case Enum(SchemaEnum)
+    case InputObject(SchemaInputObjectType)
+    case List(SchemaFieldType)
+    case NonNull(SchemaFieldType)
+}
+
+public enum SchemaScalarType {
     case String
     case Boolean
-    case List(SchemaFieldType)
+}
+
+public indirect enum SchemaInputType {
+    case Scalar(SchemaScalarType)
     case Enum(SchemaEnum)
-    case Interface(SchemaInterface)
-    case Object(SchemaObjectType)
-    case Union(SchemaUnion)
     case InputObject(SchemaInputObjectType)
-    case NonNull(SchemaFieldType)
+    case List(SchemaInputType)
+    case NonNull(SchemaInputType)
 }
 
 public struct SchemaUnion {
@@ -46,12 +58,13 @@ public struct SchemaResolver<DomainLogicType, ReturnType> {
 
 public struct SchemaInputValue {
     let description: String?
-    let type: SchemaFieldType
+    let type: SchemaInputType
     /// Perhaps it's possible to restrict the default based on type above?
     let defaultValue: Any?
+    var value: Any?
 
     init(
-        type: SchemaFieldType,
+        type: SchemaInputType,
         description: String? = nil,
         defaultValue: Any? = nil) {
             self.type = type
@@ -97,12 +110,12 @@ public struct SchemaEnum {
 }
 
 public struct SchemaEnumValue {
-    let value: Int
+    let value: String
     let description: String?
     let deprecationReason: String?
 
     public init(
-        value: Int,
+        value: String,
         description: String? = nil,
         deprecationReason: String? = nil) {
             self.value = value
@@ -111,7 +124,8 @@ public struct SchemaEnumValue {
     }
 }
 
-public struct SchemaInterface {
+/// Note that interface is a reference type, because fields can be self-referential etc.
+public class SchemaInterface {
 
     var possibleTypes: [SchemaObjectType] {
         return undefined()
@@ -122,7 +136,7 @@ public struct SchemaInterface {
     var fields: [SchemaField] {
         return undefined()
     }
-    /// This will likely be a problem. Fields are defined indirectly so you can point to itself, but common sense tells me this ends up in an infinite loop because of using value types. The solution might be to switch reference types?
+
     lazy var fieldsForNames: [String: SchemaField] = self.lazyFieldsForNames()
     let resolveType: Any -> SchemaObjectType
     private let lazyFieldsForNames: () -> [String: SchemaField] // identity set would be choice
@@ -145,13 +159,14 @@ public struct SchemaInputObjectType {
     }
 }
 
-public struct SchemaObjectType {
+/// Note that object is a reference type, because fields can be self-referential etc.
+public class SchemaObjectType {
     let name: String
     let description: String?
     var fields: [SchemaField] {
         return undefined()
     }
-    /// This will likely be a problem. Fields are defined indirectly so you can point to itself, but common sense tells me this ends up in an infinite loop because of using value types. The solution might be to switch reference types?
+
     lazy var fieldsForNames: [String: SchemaField] = self.lazyFieldsForNames()
     let interfaces: [SchemaInterface]
 
@@ -179,7 +194,7 @@ public struct Schema {
     let subscriptionType: SchemaObjectType?
     let directives: [SchemaDirective]
 
-    private let typesForNames: [String: SchemaObjectType] // identity set would be choice
+    let typesForNames: [String: SchemaObjectType] // identity set would be choice
 
     public init(
         queryType: SchemaObjectType,

@@ -1,4 +1,4 @@
-indirect enum SchemaFieldType {
+public indirect enum SchemaFieldType {
     case NonNull(SchemaFieldType)
     case String
     case List(SchemaFieldType)
@@ -7,17 +7,22 @@ indirect enum SchemaFieldType {
     case Object(SchemaObjectType)
 }
 
-struct SchemaDirective {
+public struct SchemaDirective {
 
 }
 
-struct SchemaField {
+public struct SchemaResolver<DomainLogicType, ReturnType> {
+    let resolve: DomainLogicType -> ReturnType
+}
+
+public struct SchemaField {
     let type: SchemaFieldType
     let description: String?
     let arguments: [String: (type: SchemaFieldType, description: String)]?
     let resolve: (Any -> Any)?
 
-    init(type: SchemaFieldType,
+    public init(
+        type: SchemaFieldType,
         description: String? = nil,
         arguments: [String: (type: SchemaFieldType, description: String)]? = nil,
         resolve: (Any -> Any)? = nil) {
@@ -28,24 +33,35 @@ struct SchemaField {
     }
 }
 
-struct SchemaEnum {
+public struct SchemaEnum {
     let name: String
     let description: String?
     let values: [String: SchemaEnumValue]
+
+    public init(name: String, description: String? = nil, values: [String: SchemaEnumValue]) {
+        self.name = name
+        self.description = description
+        self.values = values
+    }
 }
 
-struct SchemaEnumValue {
+public struct SchemaEnumValue {
     let value: Int
     let description: String?
+
+    public init(value: Int, description: String? = nil) {
+        self.value = value
+        self.description = description
+    }
 }
 
-struct SchemaInterface {
+public struct SchemaInterface {
     let name: String
     let description: String?
     let fields: () -> [String: SchemaField]
     let resolveType: Any -> SchemaObjectType
 
-    init(
+    public init(
         name: String,
         description: String? = nil,
         fields: () -> [String: SchemaField],
@@ -57,13 +73,13 @@ struct SchemaInterface {
     }
 }
 
-struct SchemaObjectType {
+public struct SchemaObjectType {
     let name: String
     let description: String?
     let fields: () -> [String: SchemaField]
     let interfaces: [SchemaInterface]
 
-    init(
+    public init(
         name: String,
         description: String? = nil,
         fields: () -> [String: SchemaField],
@@ -82,7 +98,7 @@ public struct Schema {
     let directives: [SchemaDirective]
     let typeMap: Any
 
-    init(
+    public init(
         queryType: SchemaObjectType,
         mutationType: SchemaObjectType? = nil,
         subscriptionType: SchemaObjectType? = nil,

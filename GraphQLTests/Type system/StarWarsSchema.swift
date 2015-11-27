@@ -1,40 +1,6 @@
-@testable import GraphQL
+import GraphQL
 
-protocol Character {
-    var id: String { get }
-}
-
-struct Human: Character {
-    let id: String
-
-    static func getById(id: String) -> Human? {
-        return nil
-    }
-
-    func getFriends() -> [Character] {
-        return []
-    }
-}
-
-struct Droid: Character {
-    let id: String
-
-    static func getById(id: String) -> Droid? {
-        return nil
-    }
-
-    func getFriends() -> [Character] {
-        return []
-    }
-}
-
-struct Episode {
-    func getHero() -> Character {
-        return Human.getById("luke")!
-    }
-}
-
-let starWarsSchema = {
+let starWarsSchema = { () -> Schema in
     var characterInterface: SchemaInterface!
     var droidType: SchemaObjectType!
     var humanType: SchemaObjectType!
@@ -175,7 +141,6 @@ let starWarsSchema = {
                 }
             ),
             ] })
-}
 
-
-
+    return Schema(queryType: queryType)
+}()

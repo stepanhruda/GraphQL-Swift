@@ -14,6 +14,7 @@
 		C003DBAA1B4636DB00A90329 /* GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = C003DBA91B4636DB00A90329 /* GraphQL.swift */; };
 		C00CA1541C07DCC3004DF73F /* StarWarsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00CA1531C07DCC3004DF73F /* StarWarsData.swift */; };
 		C00CA1561C07DCEC004DF73F /* StarWarsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00CA1551C07DCEC004DF73F /* StarWarsModels.swift */; };
+		C00CA1581C08D067004DF73F /* Introspection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00CA1571C08D067004DF73F /* Introspection.swift */; };
 		C06F7F771B856505006CF035 /* UniqueOperationNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06F7F761B856505006CF035 /* UniqueOperationNames.swift */; };
 		C06F7F791B856769006CF035 /* Visitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06F7F781B856769006CF035 /* Visitor.swift */; };
 		C0B2A1CB1C0796D500FFE199 /* kitchen-sink.graphql in Resources */ = {isa = PBXBuildFile; fileRef = C0B2A1C61C0796D500FFE199 /* kitchen-sink.graphql */; };
@@ -73,6 +74,7 @@
 		C003DBA91B4636DB00A90329 /* GraphQL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQL.swift; sourceTree = "<group>"; };
 		C00CA1531C07DCC3004DF73F /* StarWarsData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsData.swift; sourceTree = "<group>"; };
 		C00CA1551C07DCEC004DF73F /* StarWarsModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsModels.swift; sourceTree = "<group>"; };
+		C00CA1571C08D067004DF73F /* Introspection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Introspection.swift; sourceTree = "<group>"; };
 		C06F7F761B856505006CF035 /* UniqueOperationNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniqueOperationNames.swift; sourceTree = "<group>"; };
 		C06F7F781B856769006CF035 /* Visitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visitor.swift; sourceTree = "<group>"; };
 		C0B2A1C61C0796D500FFE199 /* kitchen-sink.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "kitchen-sink.graphql"; sourceTree = "<group>"; };
@@ -223,6 +225,7 @@
 		C0B2A1D01C07B01900FFE199 /* Type system */ = {
 			isa = PBXGroup;
 			children = (
+				C00CA1571C08D067004DF73F /* Introspection.swift */,
 				C0B2A1D11C07B01E00FFE199 /* Schema.swift */,
 			);
 			path = "Type system";
@@ -480,6 +483,7 @@
 				C0FE4CCE1B48BE04005217E2 /* KnownTypeNames.swift in Sources */,
 				C0FE4CC21B48BDD5005217E2 /* DirectivesOfCorrectType.swift in Sources */,
 				C06F7F791B856769006CF035 /* Visitor.swift in Sources */,
+				C00CA1581C08D067004DF73F /* Introspection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

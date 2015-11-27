@@ -1,25 +1,25 @@
-indirect enum GraphQLFieldType {
-    case NonNull(GraphQLFieldType)
+indirect enum SchemaFieldType {
+    case NonNull(SchemaFieldType)
     case String
-    case List(GraphQLFieldType)
-    case Enum(GraphQLEnum)
-    case Interface(GraphQLInterface)
-    case Object(GraphQLObjectType)
+    case List(SchemaFieldType)
+    case Enum(SchemaEnum)
+    case Interface(SchemaInterface)
+    case Object(SchemaObjectType)
 }
 
-struct GraphQLDirective {
+struct SchemaDirective {
 
 }
 
-struct GraphQLField {
-    let type: GraphQLFieldType
+struct SchemaField {
+    let type: SchemaFieldType
     let description: String?
-    let arguments: [String: (type: GraphQLFieldType, description: String)]?
+    let arguments: [String: (type: SchemaFieldType, description: String)]?
     let resolve: (Any -> Any)?
 
-    init(type: GraphQLFieldType,
+    init(type: SchemaFieldType,
         description: String? = nil,
-        arguments: [String: (type: GraphQLFieldType, description: String)]? = nil,
+        arguments: [String: (type: SchemaFieldType, description: String)]? = nil,
         resolve: (Any -> Any)? = nil) {
         self.type = type
         self.description = description
@@ -28,28 +28,28 @@ struct GraphQLField {
     }
 }
 
-struct GraphQLEnum {
+struct SchemaEnum {
     let name: String
     let description: String?
-    let values: [String: GraphQLEnumValue]
+    let values: [String: SchemaEnumValue]
 }
 
-struct GraphQLEnumValue {
+struct SchemaEnumValue {
     let value: Int
     let description: String?
 }
 
-struct GraphQLInterface {
+struct SchemaInterface {
     let name: String
     let description: String?
-    let fields: () -> [String: GraphQLField]
-    let resolveType: Any -> GraphQLObjectType
+    let fields: () -> [String: SchemaField]
+    let resolveType: Any -> SchemaObjectType
 
     init(
         name: String,
         description: String? = nil,
-        fields: () -> [String: GraphQLField],
-        resolveType: Any -> GraphQLObjectType) {
+        fields: () -> [String: SchemaField],
+        resolveType: Any -> SchemaObjectType) {
             self.name = name
             self.description = description
             self.fields = fields
@@ -57,17 +57,17 @@ struct GraphQLInterface {
     }
 }
 
-struct GraphQLObjectType {
+struct SchemaObjectType {
     let name: String
     let description: String?
-    let fields: () -> [String: GraphQLField]
-    let interfaces: [GraphQLInterface]
+    let fields: () -> [String: SchemaField]
+    let interfaces: [SchemaInterface]
 
     init(
         name: String,
         description: String? = nil,
-        fields: () -> [String: GraphQLField],
-        interfaces: [GraphQLInterface] = []) {
+        fields: () -> [String: SchemaField],
+        interfaces: [SchemaInterface] = []) {
             self.name = name
             self.description = description
             self.fields = fields
@@ -76,17 +76,17 @@ struct GraphQLObjectType {
 }
 
 public struct Schema {
-    let queryType: GraphQLObjectType
-    let mutationType: GraphQLObjectType?
-    let subscriptionType: GraphQLObjectType?
-    let directives: [GraphQLDirective]
+    let queryType: SchemaObjectType
+    let mutationType: SchemaObjectType?
+    let subscriptionType: SchemaObjectType?
+    let directives: [SchemaDirective]
     let typeMap: Any
 
     init(
-        queryType: GraphQLObjectType,
-        mutationType: GraphQLObjectType? = nil,
-        subscriptionType: GraphQLObjectType? = nil,
-        directives: [GraphQLDirective] = [includeDirective, skipDirective]
+        queryType: SchemaObjectType,
+        mutationType: SchemaObjectType? = nil,
+        subscriptionType: SchemaObjectType? = nil,
+        directives: [SchemaDirective] = [includeDirective, skipDirective]
         ) {
             self.queryType = queryType
             self.mutationType = mutationType
@@ -96,5 +96,5 @@ public struct Schema {
     }
 }
 
-let includeDirective = GraphQLDirective()
-let skipDirective = GraphQLDirective()
+let includeDirective = SchemaDirective()
+let skipDirective = SchemaDirective()

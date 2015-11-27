@@ -35,39 +35,39 @@ struct Episode {
 }
 
 let starWarsSchema = {
-    var characterInterface: GraphQLInterface!
-    var droidType: GraphQLObjectType!
-    var humanType: GraphQLObjectType!
+    var characterInterface: SchemaInterface!
+    var droidType: SchemaObjectType!
+    var humanType: SchemaObjectType!
 
-    let episodeEnum = GraphQLEnum(
+    let episodeEnum = SchemaEnum(
         name: "Episode",
         description: "One of the films in the Star Wars Trilogy",
         values: [
-            "NEWHOPE": GraphQLEnumValue(
+            "NEWHOPE": SchemaEnumValue(
                 value: 4,
                 description: "Released in 1977."),
-            "EMPIRE": GraphQLEnumValue(
+            "EMPIRE": SchemaEnumValue(
                 value: 5,
                 description: "Released in 1977."),
-            "JEDI": GraphQLEnumValue(
+            "JEDI": SchemaEnumValue(
                 value: 6,
                 description: "Released in 1977."),
         ])
 
-    let characterInterfaceDefinition = GraphQLInterface(
+    let characterInterfaceDefinition = SchemaInterface(
         name: "Character",
         description: "A character in the Star Wars Trilogy",
         fields: { [
-            "id": GraphQLField(
+            "id": SchemaField(
                 type: .NonNull(.String),
                 description: "The id of the character."),
-            "name": GraphQLField(
+            "name": SchemaField(
                 type: .String,
                 description: "The name of the character."),
-            "friends": GraphQLField(
+            "friends": SchemaField(
                 type: .List(.Interface(characterInterface)),
                 description: "The friends of the character, or an empty list if they have none."),
-            "appearsIn": GraphQLField(
+            "appearsIn": SchemaField(
                 type: .Enum(episodeEnum),
                 description: "Which movies they appear in."),
             ] },
@@ -77,54 +77,54 @@ let starWarsSchema = {
     })
     characterInterface = characterInterfaceDefinition
 
-    let humanTypeDefinition = GraphQLObjectType(
+    let humanTypeDefinition = SchemaObjectType(
         name: "Human",
         description: "A humanoid creature in the Star Wars universe.",
         fields: { [
-            "id": GraphQLField(
+            "id": SchemaField(
                 type: .NonNull(.String),
                 description: "The id of the human."),
-            "name": GraphQLField(
+            "name": SchemaField(
                 type: .String,
                 description: "The name of the human."),
-            "friends": GraphQLField(
+            "friends": SchemaField(
                 type: .List(.Interface(characterInterface)),
                 description: "The friends of the human, or an empty list if they have none.",
                 resolve: { toResolve in
                     let human = toResolve as! Human
                     return human.getFriends()
             }),
-            "appearsIn": GraphQLField(
+            "appearsIn": SchemaField(
                 type: .List(.Enum(episodeEnum)),
                 description: "Which movies they appear in."),
-            "homePlanet": GraphQLField(
+            "homePlanet": SchemaField(
                 type: .String,
                 description: "The home planet of the human, or null if unknown.")
             ] },
         interfaces: [characterInterface])
     humanType = humanTypeDefinition
 
-    let droidTypeDefinition = GraphQLObjectType(
+    let droidTypeDefinition = SchemaObjectType(
         name: "Droid",
         description: "A mechanical creature in the Star Wars universe.",
         fields: { [
-            "id": GraphQLField(
+            "id": SchemaField(
                 type: .NonNull(.String),
                 description: "The id of the droid."),
-            "name": GraphQLField(
+            "name": SchemaField(
                 type: .String,
                 description: "The name of the droid."),
-            "friends": GraphQLField(
+            "friends": SchemaField(
                 type: .List(.Interface(characterInterface)),
                 description: "The friends of the droid, or an empty list if they have none.",
                 resolve: { toResolve in
                     let droid = toResolve as! Droid
                     return droid.getFriends()
             }),
-            "appearsIn": GraphQLField(
+            "appearsIn": SchemaField(
                 type: .List(.Enum(episodeEnum)),
                 description: "Which movies they appear in."),
-            "primaryFunction": GraphQLField(
+            "primaryFunction": SchemaField(
                 type: .String,
                 description: "The primary function of the droid."),
             ] },
@@ -132,10 +132,10 @@ let starWarsSchema = {
         interfaces: [characterInterface])
     droidType = droidTypeDefinition
 
-    let queryType = GraphQLObjectType(
+    let queryType = SchemaObjectType(
         name: "Query",
         fields: { [
-            "hero": GraphQLField(
+            "hero": SchemaField(
                 type: .Interface(characterInterface),
                 arguments: [
                     "episode": (
@@ -148,7 +148,7 @@ let starWarsSchema = {
                     return episode.getHero()
                 }
             ),
-            "human": GraphQLField(
+            "human": SchemaField(
                 type: .Object(humanType),
                 arguments: [
                     "id": (
@@ -161,7 +161,7 @@ let starWarsSchema = {
                     return Human.getById(id)
                 }
             ),
-            "droid": GraphQLField(
+            "droid": SchemaField(
                 type: .Object(droidType),
                 arguments: [
                     "id": (

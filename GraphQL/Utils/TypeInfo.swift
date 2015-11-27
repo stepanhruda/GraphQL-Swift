@@ -10,7 +10,7 @@ struct GraphQLInputType {
 
 }
 
-struct GraphQLFieldDefinition {
+struct SchemaFieldDefinition {
 
 }
 
@@ -22,7 +22,7 @@ struct TypeInfo {
     private var typeStack: [GraphQLOutputType] = []
     private var parentTypeStack: [GraphQLCompositeType] = []
     private var inputTypeStack: [GraphQLInputType] = []
-    private var fieldDefinitionStack: [GraphQLFieldDefinition] = []
+    private var fieldDefinitionStack: [SchemaFieldDefinition] = []
 
     init(schema: Schema) {
         self.schema = schema

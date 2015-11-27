@@ -18,6 +18,8 @@
 		C0B2A1CC1C0796D500FFE199 /* LexerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2A1C71C0796D500FFE199 /* LexerSpec.swift */; };
 		C0B2A1CD1C0796D500FFE199 /* ParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2A1C81C0796D500FFE199 /* ParserSpec.swift */; };
 		C0B2A1CF1C0796E200FFE199 /* UniqueOperationNamesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2A1CE1C0796E200FFE199 /* UniqueOperationNamesSpec.swift */; };
+		C0B2A1D21C07B01E00FFE199 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2A1D11C07B01E00FFE199 /* Schema.swift */; };
+		C0B2A1D51C07BF0700FFE199 /* StarWarsSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2A1D41C07BF0700FFE199 /* StarWarsSchema.swift */; };
 		C0FE4CBB1B48BD68005217E2 /* Rule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE4CB81B48BD68005217E2 /* Rule.swift */; };
 		C0FE4CBC1B48BD68005217E2 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE4CBA1B48BD68005217E2 /* Validator.swift */; };
 		C0FE4CBE1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE4CBD1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift */; };
@@ -73,6 +75,8 @@
 		C0B2A1C71C0796D500FFE199 /* LexerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerSpec.swift; sourceTree = "<group>"; };
 		C0B2A1C81C0796D500FFE199 /* ParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserSpec.swift; sourceTree = "<group>"; };
 		C0B2A1CE1C0796E200FFE199 /* UniqueOperationNamesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniqueOperationNamesSpec.swift; sourceTree = "<group>"; };
+		C0B2A1D11C07B01E00FFE199 /* Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
+		C0B2A1D41C07BF0700FFE199 /* StarWarsSchema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsSchema.swift; sourceTree = "<group>"; };
 		C0FE4CB81B48BD68005217E2 /* Rule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rule.swift; sourceTree = "<group>"; };
 		C0FE4CBA1B48BD68005217E2 /* Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
 		C0FE4CBD1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentsOfCorrectType.swift; sourceTree = "<group>"; };
@@ -164,12 +168,13 @@
 			isa = PBXGroup;
 			children = (
 				C0FE4CF11B4981C5005217E2 /* Executor */,
-				C0FE4CEA1B498178005217E2 /* Language */,
-				C0FE4CB71B48BD68005217E2 /* Validator */,
-				C0FE4CF41B4981D0005217E2 /* Utils */,
-				C003DBA91B4636DB00A90329 /* GraphQL.swift */,
 				C003DB861B462D2B00A90329 /* GraphQL.h */,
+				C003DBA91B4636DB00A90329 /* GraphQL.swift */,
 				C003DB881B462D2B00A90329 /* Info.plist */,
+				C0FE4CEA1B498178005217E2 /* Language */,
+				C0B2A1D01C07B01900FFE199 /* Type system */,
+				C0FE4CF41B4981D0005217E2 /* Utils */,
+				C0FE4CB71B48BD68005217E2 /* Validator */,
 			);
 			path = GraphQL;
 			sourceTree = "<group>";
@@ -177,6 +182,7 @@
 		C003DB911B462D2B00A90329 /* GraphQLTests */ = {
 			isa = PBXGroup;
 			children = (
+				C0B2A1D31C07BEF300FFE199 /* Type system */,
 				C0B2A1C51C0796D500FFE199 /* Language */,
 				C0B2A1C91C0796D500FFE199 /* Validator */,
 				C003DB941B462D2B00A90329 /* Info.plist */,
@@ -208,6 +214,22 @@
 				C0B2A1CE1C0796E200FFE199 /* UniqueOperationNamesSpec.swift */,
 			);
 			path = Rules;
+			sourceTree = "<group>";
+		};
+		C0B2A1D01C07B01900FFE199 /* Type system */ = {
+			isa = PBXGroup;
+			children = (
+				C0B2A1D11C07B01E00FFE199 /* Schema.swift */,
+			);
+			path = "Type system";
+			sourceTree = "<group>";
+		};
+		C0B2A1D31C07BEF300FFE199 /* Type system */ = {
+			isa = PBXGroup;
+			children = (
+				C0B2A1D41C07BF0700FFE199 /* StarWarsSchema.swift */,
+			);
+			path = "Type system";
 			sourceTree = "<group>";
 		};
 		C0FE4CB71B48BD68005217E2 /* Validator */ = {
@@ -444,6 +466,7 @@
 				C003DBA11B462D3900A90329 /* Token.swift in Sources */,
 				C0FE4CE01B48BE48005217E2 /* VariablesInAllowedPosition.swift in Sources */,
 				C0FE4CEF1B498178005217E2 /* Lexer.swift in Sources */,
+				C0B2A1D21C07B01E00FFE199 /* Schema.swift in Sources */,
 				C0FE4CCA1B48BDF3005217E2 /* KnownDirectives.swift in Sources */,
 				C0FE4CF71B4981D0005217E2 /* TypeInfo.swift in Sources */,
 				C0FE4CC01B48BDCE005217E2 /* DefaultValuesOfCorrectType.swift in Sources */,
@@ -461,6 +484,7 @@
 				C0B2A1CC1C0796D500FFE199 /* LexerSpec.swift in Sources */,
 				C0B2A1CD1C0796D500FFE199 /* ParserSpec.swift in Sources */,
 				C0B2A1CF1C0796E200FFE199 /* UniqueOperationNamesSpec.swift in Sources */,
+				C0B2A1D51C07BF0700FFE199 /* StarWarsSchema.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

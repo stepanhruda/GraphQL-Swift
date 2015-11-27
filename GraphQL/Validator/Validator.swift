@@ -1,11 +1,11 @@
 struct ValidationContext {
-    let schema: GraphQLSchema
+    let schema: Schema
     let document: Document
     let typeInfo: TypeInfo
 }
 
 extension Document {
-    func validateForSchema(schema: GraphQLSchema, ruleInitializers: [ValidationContext -> Rule] = allRules) throws {
+    func validateForSchema(schema: Schema, ruleInitializers: [ValidationContext -> Rule] = allRules) throws {
         let typeInfo = TypeInfo(schema: schema)
         let context = ValidationContext(schema: schema, document: self, typeInfo: typeInfo)
         let rules = ruleInitializers.map { $0(context) }

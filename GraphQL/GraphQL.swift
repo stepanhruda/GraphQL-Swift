@@ -1,8 +1,3 @@
-
-struct GraphQLSchema {
-
-}
-
 enum GraphQLFormattedError: ErrorType {
     case Unknown
 }
@@ -17,7 +12,7 @@ enum GraphQLComposedError: ErrorType {
 }
 
 
-func graphql(schema: GraphQLSchema, requestString: String = "", rootValue: Any?, variableValues: [String: Any]?, operationName: String?, completion: (GraphQLResult -> Void)?) throws {
+func graphql(schema: Schema, requestString: String = "", rootValue: Any?, variableValues: [String: Any]?, operationName: String?, completion: (GraphQLResult -> Void)?) throws {
     do {
         let source = Source(body: requestString, name: "GraphQL request")
         let document = try Parser.parse(source)

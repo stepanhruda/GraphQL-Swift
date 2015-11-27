@@ -1,5 +1,5 @@
 enum UniqueOperationNamesError: ErrorType {
-    case DuplicateOperationName(Name)
+    case DuplicateOperationNames(Name)
 }
 
 final class UniqueOperationNames: Rule {
@@ -19,7 +19,7 @@ final class UniqueOperationNames: Rule {
 
                 if self.knownOperationNames.contains(name) {
                     // TODO: Strongly typed error
-                    throw UniqueOperationNamesError.DuplicateOperationName(name)
+                    throw UniqueOperationNamesError.DuplicateOperationNames(name)
                 }
                 self.knownOperationNames.insert(name)
 

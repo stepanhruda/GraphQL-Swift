@@ -9,62 +9,69 @@ let starWarsSchema = { () -> Schema in
         name: "Episode",
         description: "One of the films in the Star Wars Trilogy",
         values: [
-            "NEWHOPE": SchemaEnumValue(
-                value: 4,
+            SchemaEnumValue(
+                value: Movie.NewHope.rawValue,
                 description: "Released in 1977."),
-            "EMPIRE": SchemaEnumValue(
-                value: 5,
-                description: "Released in 1977."),
-            "JEDI": SchemaEnumValue(
-                value: 6,
-                description: "Released in 1977."),
+            SchemaEnumValue(
+                value: Movie.EmpireStrikesBack.rawValue,
+                description: "Released in 1980."),
+            SchemaEnumValue(
+                value: Movie.ReturnOfTheJedi.rawValue,
+                description: "Released in 1983."),
         ])
 
     let characterInterfaceDefinition = SchemaInterface(
         name: "Character",
         description: "A character in the Star Wars Trilogy",
         fields: { [
-            "id": SchemaField(
-                type: .NonNull(.String),
+            SchemaObjectField(
+                name: "id",
+                type: .NonNull(.Scalar(.String)),
                 description: "The id of the character."),
-            "name": SchemaField(
-                type: .String,
+            SchemaObjectField(
+                name: "name",
+                type: .Scalar(.String),
                 description: "The name of the character."),
-            "friends": SchemaField(
+            SchemaObjectField(
+                name: "friends",
                 type: .List(.Interface(characterInterface)),
                 description: "The friends of the character, or an empty list if they have none."),
-            "appearsIn": SchemaField(
+            SchemaObjectField(
+                name: "appearsIn",
                 type: .Enum(episodeEnum),
                 description: "Which movies they appear in."),
             ] },
         resolveType: { toResolve in
             let character = toResolve as! Character
-            return Human.getById(character.id) != nil ? humanType : droidType
-    })
+            return Human.getById(character.id) != nil ? humanType : droidType })
     characterInterface = characterInterfaceDefinition
 
     let humanTypeDefinition = SchemaObjectType(
         name: "Human",
         description: "A humanoid creature in the Star Wars universe.",
         fields: { [
-            "id": SchemaField(
-                type: .NonNull(.String),
+            SchemaObjectField(
+                name: "id",
+                type: .NonNull(.Scalar(.String)),
                 description: "The id of the human."),
-            "name": SchemaField(
-                type: .String,
+            SchemaObjectField(
+                name: "name",
+                type: .Scalar(.String),
                 description: "The name of the human."),
-            "friends": SchemaField(
+            SchemaObjectField(
+                name: "friends",
                 type: .List(.Interface(characterInterface)),
                 description: "The friends of the human, or an empty list if they have none.",
                 resolve: { toResolve in
                     let human = toResolve as! Human
-                    return human.getFriends()
-            }),
-            "appearsIn": SchemaField(
+                    return human.getFriends() }),
+            SchemaObjectField(
+                name: "appearsIn",
                 type: .List(.Enum(episodeEnum)),
                 description: "Which movies they appear in."),
-            "homePlanet": SchemaField(
-                type: .String,
+            SchemaObjectField(
+                name: "homePlanet",
+                type: .Scalar(.String),
                 description: "The home planet of the human, or null if unknown.")
             ] },
         interfaces: [characterInterface])
@@ -74,24 +81,29 @@ let starWarsSchema = { () -> Schema in
         name: "Droid",
         description: "A mechanical creature in the Star Wars universe.",
         fields: { [
-            "id": SchemaField(
-                type: .NonNull(.String),
+            SchemaObjectField(
+                name: "id",
+                type: .NonNull(.Scalar(.String)),
                 description: "The id of the droid."),
-            "name": SchemaField(
-                type: .String,
+            SchemaObjectField(
+                name: "name",
+                type: .Scalar(.String),
                 description: "The name of the droid."),
-            "friends": SchemaField(
+            SchemaObjectField(
+                name: "friends",
                 type: .List(.Interface(characterInterface)),
                 description: "The friends of the droid, or an empty list if they have none.",
                 resolve: { toResolve in
                     let droid = toResolve as! Droid
                     return droid.getFriends()
             }),
-            "appearsIn": SchemaField(
+            SchemaObjectField(
+                name: "appearsIn",
                 type: .List(.Enum(episodeEnum)),
                 description: "Which movies they appear in."),
-            "primaryFunction": SchemaField(
-                type: .String,
+            SchemaObjectField(
+                name: "primaryFunction",
+                type: .Scalar(.String),
                 description: "The primary function of the droid."),
             ] },
         
@@ -101,39 +113,43 @@ let starWarsSchema = { () -> Schema in
     let queryType = SchemaObjectType(
         name: "Query",
         fields: { [
-            "hero": SchemaField(
+            SchemaObjectField(
+                name: "hero",
                 type: .Interface(characterInterface),
                 arguments: [
-                    "episode": (
+                    SchemaInputValue(
+                        name: "episode",
                         type: .Enum(episodeEnum),
                         description: "If omitted, returns the hero of the whole saga. If provided, returns the hero of that particular episode."
-                    )
+                    ),
                 ],
                 resolve: { toResolve in
                     let episode = toResolve as! Episode
                     return episode.getHero()
                 }
             ),
-            "human": SchemaField(
+            SchemaObjectField(
+                name: "human",
                 type: .Object(humanType),
                 arguments: [
-                    "id": (
-                        type: .NonNull(.String),
-                        description: "id of the human"
-                    )
+                    SchemaInputValue(
+                        name: "id",
+                        type: .NonNull(.Scalar(.String)),
+                        description: "id of the human"),
                 ],
                 resolve: { toResolve in
                     let id = toResolve as! String
                     return Human.getById(id)
                 }
             ),
-            "droid": SchemaField(
+            SchemaObjectField(
+                name: "droid",
                 type: .Object(droidType),
                 arguments: [
-                    "id": (
-                        type: .NonNull(.String),
-                        description: "id of the droid"
-                    )
+                    SchemaInputValue(
+                        name: "id",
+                        type: .NonNull(.Scalar(.String)),
+                        description: "id of the droid"),
                 ],
                 resolve: { toResolve in
                     let id = toResolve as! String

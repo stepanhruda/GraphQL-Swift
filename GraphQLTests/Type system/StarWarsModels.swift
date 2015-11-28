@@ -2,7 +2,7 @@ protocol Character {
     var id: String { get }
     var name: String { get }
     var friends: [String] { get }
-    var appearsIn: [Int] { get }
+    var appearsIn: Set<Movie> { get }
 }
 
 enum Episode: Int {
@@ -35,14 +35,14 @@ struct Human: Character {
     let id: String
     let name: String
     let friends: [String]
-    let appearsIn: [Int]
+    let appearsIn: Set<Movie>
     let homePlanet: String?
 
     static func getById(id: String) -> Human? {
         return humanTable[id]
     }
 
-    init(id: String, name: String, friends: [String], appearsIn: [Int], homePlanet: String? = nil) {
+    init(id: String, name: String, friends: [String], appearsIn: Set<Movie>, homePlanet: String? = nil) {
         self.id = id
         self.name = name
         self.friends = friends
@@ -55,14 +55,14 @@ struct Droid: Character {
     let id: String
     let name: String
     let friends: [String]
-    let appearsIn: [Int]
+    let appearsIn: Set<Movie>
     let primaryFunction: String
 
     static func getById(id: String) -> Droid? {
         return droidTable[id]
     }
 
-    init(id: String, name: String, friends: [String], appearsIn: [Int], primaryFunction: String) {
+    init(id: String, name: String, friends: [String], appearsIn: Set<Movie>, primaryFunction: String) {
         self.id = id
         self.name = name
         self.friends = friends

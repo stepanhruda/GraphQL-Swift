@@ -23,6 +23,15 @@
 		C0B2A1CF1C0796E200FFE199 /* UniqueOperationNamesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2A1CE1C0796E200FFE199 /* UniqueOperationNamesSpec.swift */; };
 		C0B2A1D21C07B01E00FFE199 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2A1D11C07B01E00FFE199 /* Schema.swift */; };
 		C0B2A1D51C07BF0700FFE199 /* StarWarsSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B2A1D41C07BF0700FFE199 /* StarWarsSchema.swift */; };
+		C0B3E2B41C090D9100421A72 /* IdentityKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2B31C090D9100421A72 /* IdentityKit.swift */; };
+		C0B3E2B61C09202E00421A72 /* SchemaDirective.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2B51C09202E00421A72 /* SchemaDirective.swift */; };
+		C0B3E2B81C09378D00421A72 /* SchemaObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2B71C09378D00421A72 /* SchemaObjectType.swift */; };
+		C0B3E2BA1C0937C200421A72 /* SchemaInputObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2B91C0937C200421A72 /* SchemaInputObjectType.swift */; };
+		C0B3E2BC1C0937D800421A72 /* SchemaInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2BB1C0937D800421A72 /* SchemaInterface.swift */; };
+		C0B3E2BE1C0937EB00421A72 /* SchemaEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2BD1C0937EB00421A72 /* SchemaEnum.swift */; };
+		C0B3E2C01C0937FC00421A72 /* SchemaValidName.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2BF1C0937FC00421A72 /* SchemaValidName.swift */; };
+		C0B3E2C21C0938C500421A72 /* SchemaUnion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2C11C0938C500421A72 /* SchemaUnion.swift */; };
+		C0B3E2C41C0938DC00421A72 /* SchemaScalarType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2C31C0938DC00421A72 /* SchemaScalarType.swift */; };
 		C0FE4CBB1B48BD68005217E2 /* Rule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE4CB81B48BD68005217E2 /* Rule.swift */; };
 		C0FE4CBC1B48BD68005217E2 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE4CBA1B48BD68005217E2 /* Validator.swift */; };
 		C0FE4CBE1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE4CBD1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift */; };
@@ -83,6 +92,15 @@
 		C0B2A1CE1C0796E200FFE199 /* UniqueOperationNamesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniqueOperationNamesSpec.swift; sourceTree = "<group>"; };
 		C0B2A1D11C07B01E00FFE199 /* Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
 		C0B2A1D41C07BF0700FFE199 /* StarWarsSchema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsSchema.swift; sourceTree = "<group>"; };
+		C0B3E2B31C090D9100421A72 /* IdentityKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentityKit.swift; sourceTree = "<group>"; };
+		C0B3E2B51C09202E00421A72 /* SchemaDirective.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaDirective.swift; sourceTree = "<group>"; };
+		C0B3E2B71C09378D00421A72 /* SchemaObjectType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaObjectType.swift; sourceTree = "<group>"; };
+		C0B3E2B91C0937C200421A72 /* SchemaInputObjectType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaInputObjectType.swift; sourceTree = "<group>"; };
+		C0B3E2BB1C0937D800421A72 /* SchemaInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaInterface.swift; sourceTree = "<group>"; };
+		C0B3E2BD1C0937EB00421A72 /* SchemaEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaEnum.swift; sourceTree = "<group>"; };
+		C0B3E2BF1C0937FC00421A72 /* SchemaValidName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaValidName.swift; sourceTree = "<group>"; };
+		C0B3E2C11C0938C500421A72 /* SchemaUnion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaUnion.swift; sourceTree = "<group>"; };
+		C0B3E2C31C0938DC00421A72 /* SchemaScalarType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaScalarType.swift; sourceTree = "<group>"; };
 		C0FE4CB81B48BD68005217E2 /* Rule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rule.swift; sourceTree = "<group>"; };
 		C0FE4CBA1B48BD68005217E2 /* Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
 		C0FE4CBD1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentsOfCorrectType.swift; sourceTree = "<group>"; };
@@ -181,6 +199,7 @@
 				C0B2A1D01C07B01900FFE199 /* Type system */,
 				C0FE4CF41B4981D0005217E2 /* Utils */,
 				C0FE4CB71B48BD68005217E2 /* Validator */,
+				C0B3E2B31C090D9100421A72 /* IdentityKit.swift */,
 			);
 			path = GraphQL;
 			sourceTree = "<group>";
@@ -227,6 +246,14 @@
 			children = (
 				C00CA1571C08D067004DF73F /* Introspection.swift */,
 				C0B2A1D11C07B01E00FFE199 /* Schema.swift */,
+				C0B3E2B51C09202E00421A72 /* SchemaDirective.swift */,
+				C0B3E2BD1C0937EB00421A72 /* SchemaEnum.swift */,
+				C0B3E2B91C0937C200421A72 /* SchemaInputObjectType.swift */,
+				C0B3E2BB1C0937D800421A72 /* SchemaInterface.swift */,
+				C0B3E2B71C09378D00421A72 /* SchemaObjectType.swift */,
+				C0B3E2C31C0938DC00421A72 /* SchemaScalarType.swift */,
+				C0B3E2C11C0938C500421A72 /* SchemaUnion.swift */,
+				C0B3E2BF1C0937FC00421A72 /* SchemaValidName.swift */,
 			);
 			path = "Type system";
 			sourceTree = "<group>";
@@ -451,16 +478,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0B3E2BC1C0937D800421A72 /* SchemaInterface.swift in Sources */,
 				C0FE4CD81B48BE28005217E2 /* OverlappingFieldsCanBeMerged.swift in Sources */,
 				C0FE4CC41B48BDDD005217E2 /* FieldsOnCorrectType.swift in Sources */,
 				C0FE4CF81B4981D0005217E2 /* Undefined.swift in Sources */,
 				C0FE4CDE1B48BE3E005217E2 /* VariableAreInputTypes.swift in Sources */,
 				C0FE4CDA1B48BE30005217E2 /* PossibleFragmentSpreads.swift in Sources */,
 				C0FE4CC61B48BDE4005217E2 /* FragmentsOnCompositeTypes.swift in Sources */,
+				C0B3E2B81C09378D00421A72 /* SchemaObjectType.swift in Sources */,
 				C0FE4CD41B48BE19005217E2 /* NonusedFragments.swift in Sources */,
 				C0FE4CD61B48BE20005217E2 /* NoUnusedVariables.swift in Sources */,
 				C0FE4CD21B48BE12005217E2 /* NoUndefinedVariables.swift in Sources */,
 				C0FE4CEE1B498178005217E2 /* AST.swift in Sources */,
+				C0B3E2BE1C0937EB00421A72 /* SchemaEnum.swift in Sources */,
 				C0FE4CBC1B48BD68005217E2 /* Validator.swift in Sources */,
 				C003DBAA1B4636DB00A90329 /* GraphQL.swift in Sources */,
 				C0FE4CDC1B48BE36005217E2 /* ScalarLeafs.swift in Sources */,
@@ -468,10 +498,12 @@
 				C0FE4CC81B48BDED005217E2 /* KnownArgumentNames.swift in Sources */,
 				C0FE4CF31B4981C5005217E2 /* Executor.swift in Sources */,
 				C0FE4CFA1B498279005217E2 /* Source.swift in Sources */,
+				C0B3E2C21C0938C500421A72 /* SchemaUnion.swift in Sources */,
 				C06F7F771B856505006CF035 /* UniqueOperationNames.swift in Sources */,
 				C0FE4CF01B498178005217E2 /* Parser.swift in Sources */,
 				C0FE4CD01B48BE0B005217E2 /* NoFragmentCycles.swift in Sources */,
 				C0FE4CBE1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift in Sources */,
+				C0B3E2BA1C0937C200421A72 /* SchemaInputObjectType.swift in Sources */,
 				C003DBA11B462D3900A90329 /* Token.swift in Sources */,
 				C0FE4CE01B48BE48005217E2 /* VariablesInAllowedPosition.swift in Sources */,
 				C0FE4CEF1B498178005217E2 /* Lexer.swift in Sources */,
@@ -480,9 +512,13 @@
 				C0FE4CF71B4981D0005217E2 /* TypeInfo.swift in Sources */,
 				C0FE4CC01B48BDCE005217E2 /* DefaultValuesOfCorrectType.swift in Sources */,
 				C0FE4CCC1B48BDFA005217E2 /* KnownFragmentNames.swift in Sources */,
+				C0B3E2C41C0938DC00421A72 /* SchemaScalarType.swift in Sources */,
 				C0FE4CCE1B48BE04005217E2 /* KnownTypeNames.swift in Sources */,
+				C0B3E2C01C0937FC00421A72 /* SchemaValidName.swift in Sources */,
+				C0B3E2B61C09202E00421A72 /* SchemaDirective.swift in Sources */,
 				C0FE4CC21B48BDD5005217E2 /* DirectivesOfCorrectType.swift in Sources */,
 				C06F7F791B856769006CF035 /* Visitor.swift in Sources */,
+				C0B3E2B41C090D9100421A72 /* IdentityKit.swift in Sources */,
 				C00CA1581C08D067004DF73F /* Introspection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

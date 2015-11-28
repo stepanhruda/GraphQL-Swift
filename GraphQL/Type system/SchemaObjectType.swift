@@ -1,4 +1,3 @@
-/// Note that object is a reference type, because fields can be self-referential etc.
 public class SchemaObjectType: SchemaNameable {
     public let name: SchemaValidName
     let description: String?

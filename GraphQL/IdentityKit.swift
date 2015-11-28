@@ -13,10 +13,6 @@ public struct IdentitySet<SetElement: Identifiable> {
         self.storage = storage
     }
 
-    public func all() -> [SetElement] {
-        return storage.values.reduce([SetElement]()) { memo, value in return undefined() }
-    }
-
     public mutating func add(element: SetElement) {
         storage[element.identifier] = element
     }
@@ -29,16 +25,16 @@ public struct IdentitySet<SetElement: Identifiable> {
         storage[identifier] = nil
     }
 
-    public func latest(value: SetElement) -> SetElement? {
-        return latestForIdentifier(value.identifier)
+    public func elementMatching(value: SetElement) -> SetElement? {
+        return elementForIdentifier(value.identifier)
     }
 
-    public func latestForIdentifier(identifier: String) -> SetElement? {
+    public func elementForIdentifier(identifier: String) -> SetElement? {
         return storage[identifier]
     }
 
     subscript(identifier: String) -> SetElement? {
-        get { return latestForIdentifier(identifier) }
+        get { return elementForIdentifier(identifier) }
         // set subscript doesn't make sense, you use `add` instead
     }
 }

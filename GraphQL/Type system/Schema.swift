@@ -1,9 +1,17 @@
+/// We want `SchemaType` to be a protocol, but `IdentitySet<SchemaType>` isn't currently supported by Swift compiler.
+/// Hence this workaround.
+public enum SchemaType: SchemaNameable {
+    public var name: SchemaValidName {
+        return undefined()
+    }
+}
+
 public struct Schema {
     let queryType: SchemaObjectType
     let mutationType: SchemaObjectType?
     let subscriptionType: SchemaObjectType?
     let directives: [SchemaDirective]
-    let types: IdentitySet<SchemaTopLevelType>
+    let types: IdentitySet<SchemaType>
 
     public init(
         queryType: SchemaObjectType,
@@ -15,36 +23,27 @@ public struct Schema {
             self.mutationType = mutationType
             self.subscriptionType = subscriptionType
             self.directives = directives
-            self.types = undefined() // TODO
 
-            assertInterfaceConformances()
+//            let optionalArray: [SchemaObjectType?] = [queryType, mutationType, subscriptionType, Introspection.schema]
+//            let topLevelTypes = IdentitySet(values: optionalArray.flatMap { $0 }.map { SchemaType.ObjectType($0) })
+            self.types = Schema.collectAllTypesFrom([])
+
+            assertTypesConformToTheirInterfaces()
     }
 
-    func assertInterfaceConformances() {
-        for type in types {
-            switch type {
-            case .Object(let object):
-                for interface in object.interfaces {
-                    object.assertConformanceToInterface(interface)
-                }
-            default: continue
-            }
-        }
+    static func collectAllTypesFrom(types: IdentitySet<SchemaType>) -> IdentitySet<SchemaType> {
+        return []
     }
-}
 
-public indirect enum SchemaTopLevelType: SchemaNameable {
-    case Object(SchemaObjectType)
-    case Interface(SchemaInterface)
-    case Union(SchemaUnion)
-    case Enum(SchemaEnum)
-
-    public var name: SchemaValidName {
-        switch self {
-        case .Object(let object): return object.name
-        case .Interface(let interface): return interface.name
-        case .Union(let union): return union.name
-        case .Enum(let enumeration): return enumeration.name
-        }
+    func assertTypesConformToTheirInterfaces() {
+//        for type in types {
+//            switch type {
+//            case .ObjectType(let objectType):
+//                for interface in objectType.interfaces {
+//                    objectType.assertConformanceToInterface(interface)
+//                }
+//            default: continue
+//            }
+//        }
     }
 }

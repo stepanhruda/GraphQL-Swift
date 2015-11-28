@@ -35,7 +35,7 @@ class Introspection {
                 SchemaObjectField(
                     name: "directives",
                     type: .NonNull(.List(.NonNull(.Object(directive)))),
-                    description: "",
+                    description: "A list of all directives supported by this server.",
                     resolve: { toResolve in
                         let schema = toResolve as! Schema
                         return schema.directives }),

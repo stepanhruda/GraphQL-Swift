@@ -79,17 +79,19 @@ struct VariableDefinition: Definition {
     let location: Location?
 }
 
-struct Name: Node {
+public struct Name: Node, Identifiable {
     let value: String
     let location: Location?
+
+    public var identifier: String { return value }
 }
 
-func ==(a: Name, b: Name) -> Bool {
+public func ==(a: Name, b: Name) -> Bool {
     return a.value == b.value
 }
 
 extension Name: Hashable {
-    var hashValue: Int { return value.hashValue }
+    public var hashValue: Int { return value.hashValue }
 }
 
 protocol Value: Node {

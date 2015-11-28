@@ -4,6 +4,11 @@ struct ValidationContext {
     let typeInfo: TypeInfo
 }
 
+public enum DocumentValidationError: ErrorType {
+    case DuplicateOperationNames(Name, Name)
+    case Foo
+}
+
 extension Document {
     func validateForSchema(schema: Schema, ruleInitializers: [ValidationContext -> Rule] = allRules) throws {
         let typeInfo = TypeInfo(schema: schema)

@@ -9,12 +9,12 @@ class ParserSpec: QuickSpec {
         describe("parse") {
             it("parses a basic document") {
                 let string =
-                "{\n" +
-                    "  node(id: 4) {\n" +
-                    "    id,\n" +
-                    "    name\n" +
-                    "  }\n" +
-                "}\n"
+                "{" ¶
+                "  node(id: 4) {" ¶
+                "    id," ¶
+                "    name" ¶
+                "  }" ¶
+                "}"
                 let document = try! Parser.parse(Source(body: string))
 
                 expect(document.definitions.count) == 1

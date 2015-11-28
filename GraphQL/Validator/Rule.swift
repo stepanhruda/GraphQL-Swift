@@ -1,5 +1,5 @@
 let allRules: [ValidationContext -> Rule] = [
-//    UniqueOperationNames.init,
+    UniqueOperationNames.init,
 ]
 
 protocol Rule {

@@ -248,8 +248,8 @@
 		C087DAC61C0B9FCB00EF4F91 /* Validation */ = {
 			isa = PBXGroup;
 			children = (
-				C087DAC71C0B9FCB00EF4F91 /* Rule.swift */,
 				C087DAC81C0B9FCB00EF4F91 /* Rules */,
+				C087DAC71C0B9FCB00EF4F91 /* Rule.swift */,
 				C087DAE01C0B9FCB00EF4F91 /* Validator.swift */,
 			);
 			name = Validation;

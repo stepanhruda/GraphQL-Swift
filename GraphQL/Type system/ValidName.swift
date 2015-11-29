@@ -1,6 +1,5 @@
 public struct ValidName: StringLiteralConvertible, Hashable {
     public let string: String
-    // TODO: Remove this in favor of a location service
     public let location: Location?
 
     public init(string: String, location: Location? = nil) {

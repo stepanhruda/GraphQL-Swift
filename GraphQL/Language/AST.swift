@@ -7,13 +7,13 @@ extension Node {
     var type: NodeType { return .Any }
 }
 
-protocol Tree: Node {
+protocol Subtree: Node {
     var children: [Node] { get }
     mutating func removeChildAtIndex(index: Int)
     mutating func replaceChildAtIndex(index: Int, newValue: Node)
 }
 
-extension Tree {
+extension Subtree {
     mutating func removeChildAtIndex(index: Int) {}
     mutating func replaceChildAtIndex(index: Int, newValue: Node) {}
 }
@@ -24,7 +24,7 @@ public struct Location {
     let source: Source?
 }
 
-struct Document: Tree {
+struct Document: Subtree {
     var definitions: [Definition]
     let location: Location?
 
@@ -43,7 +43,7 @@ struct Document: Tree {
 protocol Definition: Node {
 }
 
-struct OperationDefinition: Definition, Tree {
+struct OperationDefinition: Definition, Subtree {
     let operation: String
     let name: Name?
     let variableDefinitions: [VariableDefinition]?
@@ -64,7 +64,7 @@ struct Directive: Node {
     var type: NodeType { return .Directive }
 }
 
-struct FragmentDefinition: Definition, Tree {
+struct FragmentDefinition: Definition, Subtree {
     let name: Name
     let typeCondition: Name
     let directives: [Directive]
@@ -108,14 +108,14 @@ protocol Fragment: Selection {
 
 }
 
-struct SelectionSet: Tree {
+struct SelectionSet: Subtree {
     let selections: [Selection]
     let location: Location?
 
     var children: [Node] { return selections.map { $0 as Node } }
 }
 
-struct Array: Value, Tree {
+struct Array: Value, Subtree {
     let values: [Value]
     let location: Location?
 
@@ -165,7 +165,7 @@ struct EnumValue: Value {
     let location: Location?
 }
 
-struct Field: Selection, Tree {
+struct Field: Selection, Subtree {
     let alias: Name?
     let name: Name
     let arguments: [Argument]
@@ -178,7 +178,7 @@ struct Field: Selection, Tree {
     var type: NodeType { return .Field }
 }
 
-struct FragmentSpread: Fragment, Tree {
+struct FragmentSpread: Fragment, Subtree {
     let name: Name
     let directives: [Directive]
     let location: Location?
@@ -186,7 +186,7 @@ struct FragmentSpread: Fragment, Tree {
     var children: [Node] { return directives.map { $0 as Node } }
 }
 
-struct InlineFragment: Fragment, Tree {
+struct InlineFragment: Fragment, Subtree {
     let typeCondition: Name
     let directives: [Directive]
     let selectionSet: SelectionSet

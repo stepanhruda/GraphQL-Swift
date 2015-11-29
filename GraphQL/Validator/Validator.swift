@@ -4,9 +4,11 @@ struct ValidationContext {
     let typeInfo: TypeInfo
 }
 
+// TODO: Location reporting
 public enum DocumentValidationError: ErrorType {
     case DuplicateOperationNames(name: String)
     case DuplicateArgumentNames(name: String)
+    case VariableIsNonInputType
 }
 
 extension Document {

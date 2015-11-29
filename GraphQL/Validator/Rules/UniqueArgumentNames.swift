@@ -20,8 +20,7 @@ final class UniqueArgumentNames: Rule {
                 }),
             Visitor(nodeType: .Argument,
                 enter: { argument in
-                    // TODO: How can this be strongly typed?
-                    guard let argument = argument as? Argument else { return .Continue }
+                    let argument = argument as! Argument
                     guard self.knownArgumentNames.elementMatching(argument.name) == nil else {
                         throw DocumentValidationError.DuplicateArgumentNames(name: argument.name.value)
                     }

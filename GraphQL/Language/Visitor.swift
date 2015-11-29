@@ -17,6 +17,7 @@ enum NodeType: String {
     case Field = "Field"
     case Directive = "Directive"
     case Argument = "Argument"
+    case VariableDefinition = "VariableDefinition"
 
     var identifier: String {
         return rawValue
@@ -49,7 +50,7 @@ extension Node {
 
         guard var afterEntering = try enter(visitor) else { return nil }
 
-        if var tree = afterEntering as? Tree {
+        if var tree = afterEntering as? Subtree {
             try tree.visitChildren(visitor)
             afterEntering = tree
         }
@@ -84,7 +85,7 @@ extension Node {
     }
 }
 
-extension Tree {
+extension Subtree {
 
     private mutating func visitChildren(visitor: Visitor) throws {
         var currentIndex = 0

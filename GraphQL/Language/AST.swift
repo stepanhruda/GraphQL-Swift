@@ -1,4 +1,17 @@
-struct Document: Subtree {
+protocol Node {
+    var type: NodeType { get }
+    var location: Location? { get }
+}
+
+protocol HasSubtree: Node {
+    var children: [Node] { get }
+
+    // Possibly remove this if we don't allow editing the AST through a visitor
+    mutating func removeChildAtIndex(index: Int)
+    mutating func replaceChildAtIndex(index: Int, newValue: Node)
+}
+
+struct Document: HasSubtree {
     var definitions: [Definition]
     let location: Location?
 
@@ -16,7 +29,7 @@ struct Document: Subtree {
 
 protocol Definition: Node {}
 
-struct OperationDefinition: Definition, Subtree {
+struct OperationDefinition: Definition, HasSubtree {
     let operationType: OperationType
     let name: ValidName?
     let variableDefinitions: [VariableDefinition]
@@ -34,14 +47,18 @@ enum OperationType {
     case Mutation
 }
 
-struct SelectionSet: Subtree {
+protocol Selection: Node {}
+
+struct SelectionSet: HasSubtree {
     let selections: [Selection]
     let location: Location?
+
+    var type: NodeType { return .SelectionSet }
 
     var children: [Node] { return selections.map { $0 as Node } }
 }
 
-struct Field: Selection, Subtree, Named {
+struct Field: Selection, HasSubtree, Named {
     let alias: ValidName?
     let name: ValidName
     // Arguments are unordered, so this could be IdentitySet<Argument> if we enforce the language rule during parsing.
@@ -69,22 +86,39 @@ struct Argument: Node, Named {
     var type: NodeType { return .Argument }
 }
 
-struct FragmentSpread: Fragment, Subtree, Named {
-    let name: ValidName
-    let directives: [Directive]
-    let location: Location?
-
-    var children: [Node] { return directives.map { $0 as Node } }
-}
-
-struct FragmentDefinition: Definition, Subtree, Named {
+struct FragmentDefinition: Definition, HasSubtree, Named {
     let name: ValidName
     let typeCondition: NamedType
     let directives: [Directive]
     let selectionSet: SelectionSet
     let location: Location?
 
+    var type: NodeType { return .FragmentDefinition }
+
+    var children: [Node] { return directives.map { $0 as Node } + [selectionSet] }
+}
+
+protocol Fragment: Selection {}
+
+struct FragmentSpread: Fragment, HasSubtree, Named {
+    let name: ValidName
+    let directives: [Directive]
+    let location: Location?
+
+    var type: NodeType { return .FragmentSpread }
+
     var children: [Node] { return directives.map { $0 as Node } }
+}
+
+struct InlineFragment: Fragment, HasSubtree {
+    let typeCondition: NamedType
+    let directives: [Directive]
+    let selectionSet: SelectionSet
+    let location: Location?
+
+    var type: NodeType { return .InlineFragment }
+
+    var children: [Node] { return directives.map { $0 as Node } + [selectionSet] }
 }
 
 protocol Value: Node {
@@ -93,31 +127,43 @@ protocol Value: Node {
 struct IntValue: Value {
     let value: Int
     let location: Location?
+
+    var type: NodeType { return .IntValue }
 }
 
 struct FloatValue: Value {
     let value: Float
     let location: Location?
+
+    var type: NodeType { return .FloatValue }
 }
 
 struct StringValue: Value {
     let value: String
     let location: Location?
+
+    var type: NodeType { return .StringValue }
 }
 
 struct BoolValue: Value {
     let value: Bool
     let location: Location?
+
+    var type: NodeType { return .BoolValue }
 }
 
 struct EnumValue: Value {
     let value: String
     let location: Location?
+
+    var type: NodeType { return .EnumValue }
 }
 
-struct ArrayValue: Value, Subtree {
+struct ListValue: Value, HasSubtree {
     let values: [Value]
     let location: Location?
+
+    var type: NodeType { return .ListValue }
 
     var children: [Node] { return values.map { $0 as Node } }
 }
@@ -127,6 +173,8 @@ struct InputObjectValue: Value {
     let fields: [InputObjectField]
     let location: Location?
 
+    var type: NodeType { return .InputObjectValue }
+
     var children: [Node] { return fields.map { $0 as Node } }
 }
 
@@ -134,18 +182,24 @@ struct InputObjectField: Value, Named {
     let name: ValidName
     let value: Value
     let location: Location?
+
+    var type: NodeType { return .InputObjectField }
 }
 
 struct VariableDefinition: Definition {
     let variable: Variable
-    let type: InputType
+    let inputType: InputType
     let defaultValue: Value?
     let location: Location?
+
+    var type: NodeType { return .VariableDefinition }
 }
 
 struct Variable: Value, Named {
     let name: ValidName
     let location: Location?
+
+    var type: NodeType { return .Variable }
 }
 
 protocol InputType: Node { }
@@ -153,16 +207,22 @@ protocol InputType: Node { }
 struct NamedType: InputType {
     let value: String
     let location: Location?
+
+    var type: NodeType { return .NamedType }
 }
 
 struct NonNullType: InputType {
-    let type: InputType
+    let inputType: InputType
     let location: Location?
+
+    var type: NodeType { return .NonNullType }
 }
 
 struct ListType: InputType {
-    let type: InputType
+    let inputType: InputType
     let location: Location?
+
+    var type: NodeType { return .ListType }
 }
 
 struct Directive: Node, Named {
@@ -173,36 +233,7 @@ struct Directive: Node, Named {
     var type: NodeType { return .Directive }
 }
 
-protocol Selection: Node {}
-
-protocol Fragment: Selection {}
-
-struct InlineFragment: Fragment, Subtree {
-    let typeCondition: NamedType
-    let directives: [Directive]
-    let selectionSet: SelectionSet
-    let location: Location?
-
-    // TODO: Should SelectionSet be included?
-    var children: [Node] { return directives.map { $0 as Node } }
-}
-
-protocol Node {
-    var type: NodeType { get }
-}
-
-// TODO: remove this
-extension Node {
-    var type: NodeType { return .Any }
-}
-
-protocol Subtree: Node {
-    var children: [Node] { get }
-    mutating func removeChildAtIndex(index: Int)
-    mutating func replaceChildAtIndex(index: Int, newValue: Node)
-}
-
-extension Subtree {
+extension HasSubtree {
     mutating func removeChildAtIndex(index: Int) {}
     mutating func replaceChildAtIndex(index: Int, newValue: Node) {}
 }

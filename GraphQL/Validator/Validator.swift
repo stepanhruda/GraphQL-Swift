@@ -47,7 +47,7 @@ extension Document {
 
                 let action = try enter(node)
 
-                if case .SkipSubtree = action {
+                if case .SkipHasSubtree = action {
                     typeInfo.leave(node)
                 }
 

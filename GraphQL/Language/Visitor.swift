@@ -3,29 +3,42 @@ enum VisitAction {
     case Continue
     case Stop
     /// Skip doesn't make sense when returned from a "leave" closure and causes a fatal error.
-    case SkipSubtree
+    case SkipHasSubtree
     case ReplaceValue(Node)
     case RemoveValue
 }
 
 enum NodeType: String {
-    case Any = "Any"
-    case Document = "Document"
-    case OperationDefinition = "OperationDefinition"
-    case FragmentDefinition = "FragmentDefinition"
-    case FragmentSpread = "FragmentSpread"
-    case Field = "Field"
-    case Directive = "Directive"
-    case Argument = "Argument"
-    case VariableDefinition = "VariableDefinition"
+    case Any
+    case Document
+    case OperationDefinition
+    case FragmentDefinition
+    case FragmentSpread
+    case Field
+    case Directive
+    case Argument
+    case VariableDefinition
+    case SelectionSet
+    case InlineFragment
+    case IntValue
+    case FloatValue
+    case StringValue
+    case BoolValue
+    case EnumValue
+    case ListValue
+    case InputObjectValue
+    case InputObjectField
+    case Variable
+    case NamedType
+    case NonNullType
+    case ListType
 
-    var identifier: String {
-        return rawValue
-    }
+
+    var identifier: String { return rawValue }
 }
 
 enum VisitError: ErrorType {
-    case SkipSubtree
+    case SkipHasSubtree
     case Stop
 }
 
@@ -50,7 +63,7 @@ extension Node {
 
         guard var afterEntering = try enter(visitor) else { return nil }
 
-        if var tree = afterEntering as? Subtree {
+        if var tree = afterEntering as? HasSubtree {
             try tree.visitChildren(visitor)
             afterEntering = tree
         }
@@ -66,7 +79,7 @@ extension Node {
         switch try enter(self) {
         case .Continue: return self
         case .Stop: throw VisitError.Stop
-        case .SkipSubtree: throw VisitError.SkipSubtree
+        case .SkipHasSubtree: throw VisitError.SkipHasSubtree
         case .ReplaceValue(let newValue): return newValue
         case .RemoveValue: return nil
         }
@@ -78,14 +91,14 @@ extension Node {
         switch try leave(self) {
         case .Continue: return self
         case .Stop: throw VisitError.Stop
-        case .SkipSubtree: fatalError("Developer error: there is no point in skipping a subtree after it has been visited")
+        case .SkipHasSubtree: fatalError("Developer error: there is no point in skipping a subtree after it has been visited")
         case .ReplaceValue(let newValue): return newValue
         case .RemoveValue: return nil
         }
     }
 }
 
-extension Subtree {
+extension HasSubtree {
 
     private mutating func visitChildren(visitor: Visitor) throws {
         var currentIndex = 0

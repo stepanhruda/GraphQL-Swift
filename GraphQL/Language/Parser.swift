@@ -132,7 +132,7 @@ final class Parser {
 
         return VariableDefinition(
             variable: try parseVariable(),
-            type: try { try expect(.Colon); return try parseType() }(),
+            inputType: try { try expect(.Colon); return try parseType() }(),
             defaultValue: try skipping(.Equals) ? try parseValue(isConst: true) : nil,
             location: locateWithStart(start))
     }
@@ -144,12 +144,12 @@ final class Parser {
         if try skipping(.BracketLeft) {
             type = try parseType()
             try expect(.BracketRight)
-            type = ListType(type: type, location: locateWithStart(start))
+            type = ListType(inputType: type, location: locateWithStart(start))
         } else {
             type = try parseNamedType()
         }
         if try skipping(.Bang) {
-            return NonNullType(type: type, location: locateWithStart(start))
+            return NonNullType(inputType: type, location: locateWithStart(start))
         } else {
             return type
         }
@@ -165,7 +165,7 @@ final class Parser {
         let start = currentToken.start
         try expectKeyword(fragment)
         let name = try parseName()
-        guard name.string != on else { fatalError() }
+        guard name.string != on else { throw unexpectedTokenError }
         return FragmentDefinition(
             name: name,
             typeCondition: try parseTypeCondition(),
@@ -317,10 +317,10 @@ final class Parser {
         throw unexpectedTokenError
     }
 
-    func parseArray(isConst isConst: Bool) throws -> ArrayValue {
+    func parseArray(isConst isConst: Bool) throws -> ListValue {
         let start = currentToken.start
         let parseFunction = isConst ? parseConstValue : parseVariableValue
-        return ArrayValue(
+        return ListValue(
             values: try parseZeroOrMoreBetweenDelimiters(left: .BracketLeft, function: parseFunction, right: .BracketRight),
             location: locateWithStart(start))
     }

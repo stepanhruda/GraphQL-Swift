@@ -1,7 +1,7 @@
 /// We want `SchemaType` to be a protocol, but `IdentitySet<SchemaType>` isn't currently supported by Swift compiler.
 /// Hence this workaround.
-public enum SchemaType: SchemaNameable {
-    public var name: SchemaValidName {
+public enum SchemaType: Named {
+    public var name: ValidName {
         return undefined()
     }
 }

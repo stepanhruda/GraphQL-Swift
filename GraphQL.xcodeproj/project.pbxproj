@@ -33,7 +33,7 @@
 		C0B3E2BA1C0937C200421A72 /* SchemaInputObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2B91C0937C200421A72 /* SchemaInputObjectType.swift */; };
 		C0B3E2BC1C0937D800421A72 /* SchemaInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2BB1C0937D800421A72 /* SchemaInterface.swift */; };
 		C0B3E2BE1C0937EB00421A72 /* SchemaEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2BD1C0937EB00421A72 /* SchemaEnum.swift */; };
-		C0B3E2C01C0937FC00421A72 /* SchemaValidName.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2BF1C0937FC00421A72 /* SchemaValidName.swift */; };
+		C0B3E2C01C0937FC00421A72 /* ValidName.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2BF1C0937FC00421A72 /* ValidName.swift */; };
 		C0B3E2C21C0938C500421A72 /* SchemaUnion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2C11C0938C500421A72 /* SchemaUnion.swift */; };
 		C0B3E2C41C0938DC00421A72 /* SchemaScalarType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2C31C0938DC00421A72 /* SchemaScalarType.swift */; };
 		C0B3E2C81C0A3C2200421A72 /* MultilineStringOperator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2C71C0A3C2200421A72 /* MultilineStringOperator.swift */; };
@@ -109,7 +109,7 @@
 		C0B3E2B91C0937C200421A72 /* SchemaInputObjectType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaInputObjectType.swift; sourceTree = "<group>"; };
 		C0B3E2BB1C0937D800421A72 /* SchemaInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaInterface.swift; sourceTree = "<group>"; };
 		C0B3E2BD1C0937EB00421A72 /* SchemaEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaEnum.swift; sourceTree = "<group>"; };
-		C0B3E2BF1C0937FC00421A72 /* SchemaValidName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaValidName.swift; sourceTree = "<group>"; };
+		C0B3E2BF1C0937FC00421A72 /* ValidName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidName.swift; sourceTree = "<group>"; };
 		C0B3E2C11C0938C500421A72 /* SchemaUnion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaUnion.swift; sourceTree = "<group>"; };
 		C0B3E2C31C0938DC00421A72 /* SchemaScalarType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaScalarType.swift; sourceTree = "<group>"; };
 		C0B3E2C71C0A3C2200421A72 /* MultilineStringOperator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultilineStringOperator.swift; path = GraphQLTests/Language/MultilineStringOperator.swift; sourceTree = SOURCE_ROOT; };
@@ -262,6 +262,7 @@
 			isa = PBXGroup;
 			children = (
 				C00CA1571C08D067004DF73F /* Introspection.swift */,
+				C0B3E2BF1C0937FC00421A72 /* ValidName.swift */,
 				C0B2A1D11C07B01E00FFE199 /* Schema.swift */,
 				C0B3E2B51C09202E00421A72 /* SchemaDirective.swift */,
 				C0B3E2BD1C0937EB00421A72 /* SchemaEnum.swift */,
@@ -270,7 +271,6 @@
 				C0B3E2B71C09378D00421A72 /* SchemaObjectType.swift */,
 				C0B3E2C31C0938DC00421A72 /* SchemaScalarType.swift */,
 				C0B3E2C11C0938C500421A72 /* SchemaUnion.swift */,
-				C0B3E2BF1C0937FC00421A72 /* SchemaValidName.swift */,
 			);
 			path = "Type system";
 			sourceTree = "<group>";
@@ -539,7 +539,7 @@
 				C0FE4CCC1B48BDFA005217E2 /* KnownFragmentNames.swift in Sources */,
 				C0B3E2C41C0938DC00421A72 /* SchemaScalarType.swift in Sources */,
 				C0FE4CCE1B48BE04005217E2 /* KnownTypeNames.swift in Sources */,
-				C0B3E2C01C0937FC00421A72 /* SchemaValidName.swift in Sources */,
+				C0B3E2C01C0937FC00421A72 /* ValidName.swift in Sources */,
 				C0B3E2CC1C0A56EF00421A72 /* UniqueArgumentNames.swift in Sources */,
 				C0B3E2B61C09202E00421A72 /* SchemaDirective.swift in Sources */,
 				C06F7F791B856769006CF035 /* Visitor.swift in Sources */,

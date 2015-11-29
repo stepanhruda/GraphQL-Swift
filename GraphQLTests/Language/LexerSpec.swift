@@ -2,7 +2,7 @@
 import Nimble
 import Quick
 
-class LexerSpec: QuickSpec {
+final class LexerSpec: QuickSpec {
 
     override func spec() {
 

@@ -4,7 +4,7 @@ final class UniqueArgumentNames: Rule {
         self.context = context
     }
 
-    var knownArgumentNames: IdentitySet<Name> = []
+    var knownArgumentNames: Set<ValidName> = []
 
     func visitors() -> IdentitySet<Visitor> {
         return [
@@ -21,11 +21,11 @@ final class UniqueArgumentNames: Rule {
             Visitor(nodeType: .Argument,
                 enter: { argument in
                     let argument = argument as! Argument
-                    guard self.knownArgumentNames.elementMatching(argument.name) == nil else {
-                        throw DocumentValidationError.DuplicateArgumentNames(name: argument.name.value)
+                    guard !self.knownArgumentNames.contains(argument.name) else {
+                        throw DocumentValidationError.DuplicateArgumentNames(name: argument.name.string)
                     }
 
-                    self.knownArgumentNames.add(argument.name)
+                    self.knownArgumentNames.insert(argument.name)
 
                     return .Continue
                 }),

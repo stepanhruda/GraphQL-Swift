@@ -1,10 +1,10 @@
-public class SchemaEnum: SchemaNameable {
-    public let name: SchemaValidName
+public final class SchemaEnum: Named {
+    public let name: ValidName
     let description: String?
     let values: IdentitySet<SchemaEnumValue>
 
     public init(
-        name: SchemaValidName,
+        name: ValidName,
         description: String? = nil,
         values: IdentitySet<SchemaEnumValue>) {
             self.name = name

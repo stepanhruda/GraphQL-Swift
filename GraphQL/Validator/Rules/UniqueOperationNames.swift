@@ -4,7 +4,7 @@ final class UniqueOperationNames: Rule {
         self.context = context
     }
 
-    var knownOperationNames: IdentitySet<Name> = []
+    var knownOperationNames: Set<ValidName> = []
 
     func visitors() -> IdentitySet<Visitor> {
         return [Visitor(
@@ -13,11 +13,11 @@ final class UniqueOperationNames: Rule {
                 let operation = operation as! OperationDefinition
                 guard let name = operation.name else { return .Continue }
 
-                guard self.knownOperationNames.elementMatching(name) == nil else {
-                    throw DocumentValidationError.DuplicateOperationNames(name: name.value)
+                guard !self.knownOperationNames.contains(name) else {
+                    throw DocumentValidationError.DuplicateOperationNames(name: name.string)
                 }
 
-                self.knownOperationNames.add(name)
+                self.knownOperationNames.insert(name)
 
                 return .Continue
             })]

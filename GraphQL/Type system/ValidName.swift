@@ -1,8 +1,11 @@
-public struct SchemaValidName: StringLiteralConvertible {
+public struct ValidName: StringLiteralConvertible, Hashable {
     public let string: String
+    // TODO: Remove this in favor of a location service
+    public let location: Location?
 
-    public init(string: String) {
+    public init(string: String, location: Location? = nil) {
         self.string = string
+        self.location = location
     }
 
     public typealias ExtendedGraphemeClusterLiteralType = String
@@ -19,18 +22,24 @@ public struct SchemaValidName: StringLiteralConvertible {
     public init(stringLiteral value: StringLiteralType) {
         self.init(string: value)
     }
+
+    public var hashValue: Int { return string.hashValue }
 }
 
-extension SchemaValidName: CustomStringConvertible {
+public func == (left: ValidName, right: ValidName) -> Bool {
+    return left.string == right.string
+}
+
+extension ValidName: CustomStringConvertible {
     public var description: String {
         return string
     }
 }
 
-public protocol SchemaNameable: Identifiable {
-    var name: SchemaValidName { get }
+public protocol Named: Identifiable {
+    var name: ValidName { get }
 }
 
-extension SchemaNameable {
+extension Named {
     public var identifier: String { return name.string }
 }

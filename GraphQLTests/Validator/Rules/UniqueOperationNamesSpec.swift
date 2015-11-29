@@ -2,7 +2,7 @@
 import Nimble
 import Quick
 
-class UniqueOperationNamesSpec: QuickSpec {
+final class UniqueOperationNamesSpec: QuickSpec {
 
     override func spec() {
         let rule: [ValidationContext -> Rule] = [UniqueOperationNames.init]

@@ -34,7 +34,7 @@ extension Document {
 
     }
 
-    func visitUsingRule(rule: Rule, var typeInfo: TypeInfo) throws {
+    func visitUsingRule(rule: Rule, typeInfo: TypeInfo) throws {
 
         try visit(Visitor(nodeType: .Any,
 
@@ -71,8 +71,8 @@ extension Rule {
 
     private func findVisitorForNode(node: Node) -> Visitor? {
         let cachedVisitors = visitors()
-        let specificVisitor = cachedVisitors.elementForIdentifier(node.type.identifier)
-        let anyVisitor = cachedVisitors.elementForIdentifier(NodeType.Any.identifier)
+        let specificVisitor = cachedVisitors.memberForIdentifier(node.type.identifier)
+        let anyVisitor = cachedVisitors.memberForIdentifier(NodeType.Any.identifier)
         return specificVisitor ?? anyVisitor
     }
 }

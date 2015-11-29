@@ -2,7 +2,7 @@
 import Nimble
 import Quick
 
-class UniqueArgumentNamesSpec: QuickSpec {
+final class UniqueArgumentNamesSpec: QuickSpec {
 
     override func spec() {
         let rule: [ValidationContext -> Rule] = [UniqueArgumentNames.init]

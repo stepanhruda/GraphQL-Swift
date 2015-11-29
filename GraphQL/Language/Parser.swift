@@ -23,7 +23,7 @@ struct ParseOptions: OptionSetType {
     static let NoSource = ParseOptions(rawValue: 1 << 1)
 }
 
-class Parser {
+final class Parser {
     let lexer: String.Index? throws -> Token
     let source: Source
     let options: ParseOptions
@@ -70,13 +70,16 @@ class Parser {
                 throw unexpectedTokenError
             }
 
-        } while try !skip(.EndOfFile)
+        } while try !skipping(.EndOfFile)
 
         return Document(definitions: definitions, location: locateWithStart(start))
     }
 
-    // TODO: this name is confusing
-    func skip(kind: TokenKind) throws -> Bool {
+    /// If the next token is of the given kind, `skipping` skips over it and returns `true`.
+    /// If the next token is different, `skipping` doesn't move the parser and returns `false`.
+    ///
+    /// The naming is in favor of readability: `try skipping(.Foo)` conveys the behavior well.
+    func skipping(kind: TokenKind) throws -> Bool {
         let match = currentToken.kind == kind
         if (match) {
             try advance()
@@ -99,8 +102,8 @@ class Parser {
         return OperationDefinition(
             operationType: .Query,
             name: nil,
-            variableDefinitions: nil,
-            directives: nil,
+            variableDefinitions: [],
+            directives: [],
             selectionSet: try parseSelectionSet(),
             location: locateWithStart(start))
     }
@@ -129,23 +132,23 @@ class Parser {
 
         return VariableDefinition(
             variable: try parseVariable(),
-            type: (try expect(.Colon), try parseType()),
-            defaultValue: try skip(.Equals) ? try parseValue(isConst: true) : nil,
+            type: try { try expect(.Colon); return try parseType() }(),
+            defaultValue: try skipping(.Equals) ? try parseValue(isConst: true) : nil,
             location: locateWithStart(start))
     }
 
-    func parseType() throws -> Type {
+    func parseType() throws -> InputType {
         let start = currentToken.start
 
-        var type: Type
-        if try skip(.BracketLeft) {
+        var type: InputType
+        if try skipping(.BracketLeft) {
             type = try parseType()
             try expect(.BracketRight)
             type = ListType(type: type, location: locateWithStart(start))
         } else {
             type = try parseNamedType()
         }
-        if try skip(.Bang) {
+        if try skipping(.Bang) {
             return NonNullType(type: type, location: locateWithStart(start))
         } else {
             return type
@@ -161,17 +164,19 @@ class Parser {
     func parseFragmentDefinition() throws -> FragmentDefinition {
         let start = currentToken.start
         try expectKeyword(fragment)
+        let name = try parseName()
+        guard name.string != on else { fatalError() }
         return FragmentDefinition(
-            name: try parseName(),
+            name: name,
             typeCondition: try parseTypeCondition(),
             directives: try parseDirectives(),
             selectionSet: try parseSelectionSet(),
             location: locateWithStart(start))
     }
 
-    func parseTypeCondition() throws -> Name {
+    func parseTypeCondition() throws -> NamedType {
         try expectKeyword(on)
-        return try parseName()
+        return try parseNamedType()
     }
 
     func expectKeyword(keyword: String) throws -> Token {
@@ -184,10 +189,10 @@ class Parser {
         return token
     }
 
-    func parseName() throws -> Name {
+    func parseName() throws -> ValidName {
         let start = currentToken.start
         let token = try expect(.Name)
-        return Name(value: token.value as! String, location: locateWithStart(start))
+        return ValidName(string: token.value as! String, location: locateWithStart(start))
     }
 
     func expect(kind: TokenKind) throws -> Token {
@@ -216,10 +221,8 @@ class Parser {
         try expect(.Spread)
         switch currentToken.value as! String {
         case on:
-            try advance()
-
             return InlineFragment(
-                typeCondition: try parseName(),
+                typeCondition: try parseTypeCondition(),
                 directives: try parseDirectives(),
                 selectionSet: try parseSelectionSet(),
                 location: locateWithStart(start))
@@ -236,9 +239,9 @@ class Parser {
 
         let nameOrAlias = try parseName()
 
-        var alias: Name?
-        var name: Name
-        if try skip(.Colon) {
+        var alias: ValidName?
+        var name: ValidName
+        if try skipping(.Colon) {
             alias = nameOrAlias
             name = try parseName()
         } else {
@@ -287,7 +290,7 @@ class Parser {
         try expect(.At)
         return Directive(
             name: try parseName(),
-            value: try skip(.Colon) ? try parseValue(isConst: false) : nil,
+            value: try skipping(.Colon) ? try parseValue(isConst: false) : nil,
             location: locateWithStart(start))
     }
 
@@ -296,7 +299,7 @@ class Parser {
         case TokenKind.BracketLeft:
             return try parseArray(isConst: isConst)
         case TokenKind.BraceLeft:
-            return try parseObject(isConst: isConst)
+            return try parseInputObject(isConst: isConst)
         case TokenKind.Int:
             return try parseInt()
         case TokenKind.Float:
@@ -314,10 +317,10 @@ class Parser {
         throw unexpectedTokenError
     }
 
-    func parseArray(isConst isConst: Bool) throws -> Array {
+    func parseArray(isConst isConst: Bool) throws -> ArrayValue {
         let start = currentToken.start
         let parseFunction = isConst ? parseConstValue : parseVariableValue
-        return Array(
+        return ArrayValue(
             values: try parseZeroOrMoreBetweenDelimiters(left: .BracketLeft, function: parseFunction, right: .BracketRight),
             location: locateWithStart(start))
     }
@@ -343,7 +346,7 @@ class Parser {
     func parseVariable() throws -> Variable {
         let start = currentToken.start
         try expect(.Dollar)
-        return Variable(value: try parseName(), location: locateWithStart(start))
+        return Variable(name: try parseName(), location: locateWithStart(start))
     }
 
     func parseBoolOrEnum() throws -> Value {
@@ -357,26 +360,27 @@ class Parser {
         }
     }
 
-    func parseObject(isConst isConst: Bool) throws -> Object {
+    func parseInputObject(isConst isConst: Bool) throws -> InputObjectValue {
         let start = currentToken.start
         try expect(.BraceLeft)
-        var fields: [ObjectField] = []
-        var fieldNames: [Name] = []
-        while try !skip(.BraceRight) {
-            fields.append(try parseObjectField(isConst: isConst, existingFieldNames: &fieldNames))
+        var fields: [InputObjectField] = []
+        // This should be IdentitySet<ValidName>
+        var fieldNames: [ValidName] = []
+        while try !skipping(.BraceRight) {
+            fields.append(try parseInputObjectField(isConst: isConst, existingFieldNames: &fieldNames))
         }
-        return Object(fields: fields, location: locateWithStart(start))
+        return InputObjectValue(fields: fields, location: locateWithStart(start))
     }
 
-    func parseObjectField(isConst isConst: Bool, inout existingFieldNames: [Name]) throws -> ObjectField {
+    func parseInputObjectField(isConst isConst: Bool, inout existingFieldNames: [ValidName]) throws -> InputObjectField {
         let start = currentToken.start
         let name = try parseName()
-        guard !(existingFieldNames.contains { $0.value == name.value }) else {
-            throw ParserError(code: .DuplicateInputObjectField, source: source, position: previousEnd, description: "Duplicate input object field \(name.value)")
+        guard !(existingFieldNames.contains { $0.string == name.string }) else {
+            throw ParserError(code: .DuplicateInputObjectField, source: source, position: previousEnd, description: "Duplicate input object field \(name.string)")
         }
         existingFieldNames.append(name)
 
-        return ObjectField(
+        return InputObjectField(
             name: name,
             value: try parseObjectFieldValue(isConst: isConst),
             location: locateWithStart(start))
@@ -402,7 +406,7 @@ class Parser {
     func parseZeroOrMoreBetweenDelimiters<T>(left left: TokenKind, function: () throws -> T, right: TokenKind) throws -> [T] {
         try expect(left)
         var nodes: [T] = []
-        while try !skip(right) {
+        while try !skipping(right) {
             nodes.append(try function())
         }
         return nodes
@@ -411,7 +415,7 @@ class Parser {
     func parseOneOrMoreBetweenDelimiters<T>(left left: TokenKind, function: () throws -> T, right: TokenKind) throws -> [T] {
         try expect(left)
         var nodes: [T] = [try function()]
-        while try !skip(right) {
+        while try !skipping(right) {
             nodes.append(try function())
         }
         return nodes

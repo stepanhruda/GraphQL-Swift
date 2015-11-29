@@ -1,5 +1,5 @@
-public struct SchemaDirective: SchemaNameable {
-    public let name: SchemaValidName
+public struct SchemaDirective: Named {
+    public let name: ValidName
     let description: String?
     let arguments: IdentitySet<SchemaInputValue>
     let onOperation: Bool
@@ -7,7 +7,7 @@ public struct SchemaDirective: SchemaNameable {
     let onField: Bool
 
     public init(
-        name: SchemaValidName,
+        name: ValidName,
         description: String? = nil,
         arguments: IdentitySet<SchemaInputValue>,
         onOperation: Bool = false,

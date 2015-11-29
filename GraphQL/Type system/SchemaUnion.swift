@@ -1,11 +1,11 @@
-public class SchemaUnion: SchemaNameable {
-    public let name: SchemaValidName
+public final class SchemaUnion: Named {
+    public let name: ValidName
     let description: String?
     let possibleTypes: IdentitySet<SchemaObjectType>
     let resolve: Any -> SchemaObjectType
 
     public init(
-        name: SchemaValidName,
+        name: ValidName,
         description: String? = nil,
         possibleTypes: IdentitySet<SchemaObjectType>,
         resolve: Any -> SchemaObjectType

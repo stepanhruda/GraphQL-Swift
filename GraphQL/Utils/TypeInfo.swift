@@ -17,7 +17,7 @@ struct SchemaObjectFieldDefinition {
 /// TypeInfo is a utility class which, given a GraphQL schema, can keep track
 /// of the current field and type definitions at any point in a GraphQL document
 /// AST during a recursive descent by calling `enter` and `leave`.
-struct TypeInfo {
+final class TypeInfo {
     let schema: Schema
     private var typeStack: [GraphQLOutputType] = []
     private var parentTypeStack: [GraphQLCompositeType] = []
@@ -28,11 +28,11 @@ struct TypeInfo {
         self.schema = schema
     }
 
-    mutating func enter(node: Node) {
+    func enter(node: Node) {
 
     }
 
-    mutating func leave(node: Node) {
+    func leave(node: Node) {
 
     }
 }

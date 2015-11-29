@@ -2,45 +2,49 @@ public protocol Identifiable {
     var identifier: String { get }
 }
 
-public struct IdentitySet<SetElement: Identifiable> {
-    private var storage: [String: SetElement]
+public struct IdentitySet<Member: Identifiable> {
+    private var storage: [String: Member]
 
-    public init(values: [SetElement] = []) {
-        var storage = [String: SetElement](minimumCapacity: values.count)
+    public init(values: [Member] = []) {
+        var storage = [String: Member](minimumCapacity: values.count)
         for value in values {
             storage[value.identifier] = value
         }
         self.storage = storage
     }
 
-    public mutating func add(element: SetElement) {
-        storage[element.identifier] = element
+    public mutating func insert(member: Member) {
+        storage[member.identifier] = member
     }
 
-    public mutating func remove(element: SetElement) {
-        removeForIdentifier(element.identifier)
+    public mutating func remove(member: Member) {
+        removeForIdentifier(member.identifier)
     }
 
     public mutating func removeForIdentifier(identifier: String) {
         storage[identifier] = nil
     }
 
-    public func elementMatching(value: SetElement) -> SetElement? {
-        return elementForIdentifier(value.identifier)
+    public func memberMatching(member: Member) -> Member? {
+        return memberForIdentifier(member.identifier)
     }
 
-    public func elementForIdentifier(identifier: String) -> SetElement? {
+    public func memberForIdentifier(identifier: String) -> Member? {
         return storage[identifier]
     }
 
-    subscript(identifier: String) -> SetElement? {
-        get { return elementForIdentifier(identifier) }
+    public func contains(member: Member) -> Bool {
+        return memberMatching(member) != nil
+    }
+
+    subscript(identifier: String) -> Member? {
+        get { return memberForIdentifier(identifier) }
         // set subscript doesn't make sense, you use `add` instead
     }
 }
 
 extension IdentitySet: ArrayLiteralConvertible {
-    public typealias Element = SetElement
+    public typealias Element = Member
 
     public init(arrayLiteral elements: IdentitySet.Element...) {
         self.init(values: elements)
@@ -48,7 +52,7 @@ extension IdentitySet: ArrayLiteralConvertible {
 }
 
 extension IdentitySet: SequenceType {
-    public typealias Generator = IdentitySetGenerator<SetElement>
+    public typealias Generator = IdentitySetGenerator<Member>
 
     public func generate() -> Generator {
         return IdentitySetGenerator(dictionaryGenerator: storage.generate())

@@ -1,4 +1,4 @@
-class Introspection {
+final class Introspection {
 
     static let schema = SchemaObjectType(
             name: "__Schema",

@@ -1,5 +1,5 @@
-public class SchemaObjectType: SchemaNameable {
-    public let name: SchemaValidName
+public final class SchemaObjectType: Named {
+    public let name: ValidName
     let description: String?
 
     lazy var fields: IdentitySet<SchemaObjectField> = self.lazyFields()
@@ -8,7 +8,7 @@ public class SchemaObjectType: SchemaNameable {
     private let lazyFields: () -> IdentitySet<SchemaObjectField>
 
     public init(
-        name: SchemaValidName,
+        name: ValidName,
         description: String? = nil,
         fields: () -> IdentitySet<SchemaObjectField>,
         interfaces: [SchemaInterface] = []) {
@@ -29,8 +29,8 @@ public indirect enum SchemaObjectFieldType {
     case NonNull(SchemaObjectFieldType)
 }
 
-public struct SchemaObjectField: SchemaNameable {
-    public let name: SchemaValidName
+public struct SchemaObjectField: Named {
+    public let name: ValidName
     let type: SchemaObjectFieldType
     let description: String?
     let arguments: IdentitySet<SchemaInputValue>
@@ -38,7 +38,7 @@ public struct SchemaObjectField: SchemaNameable {
     let deprecationReason: String?
 
     public init(
-        name: SchemaValidName,
+        name: ValidName,
         type: SchemaObjectFieldType,
         description: String? = nil,
         arguments: IdentitySet<SchemaInputValue> = [],

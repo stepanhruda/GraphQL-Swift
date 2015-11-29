@@ -1,10 +1,10 @@
-public class SchemaInterface: SchemaNameable {
+public final class SchemaInterface: Named {
 
     var possibleTypes: IdentitySet<SchemaObjectType> {
         return undefined()
     }
 
-    public let name: SchemaValidName
+    public let name: ValidName
     let description: String?
     lazy var fields: IdentitySet<SchemaObjectField> = self.lazyFields()
 
@@ -12,7 +12,7 @@ public class SchemaInterface: SchemaNameable {
     private let lazyFields: () -> IdentitySet<SchemaObjectField>
 
     public init(
-        name: SchemaValidName,
+        name: ValidName,
         description: String? = nil,
         fields: () -> IdentitySet<SchemaObjectField>,
         resolveType: Any -> SchemaObjectType) {
@@ -27,7 +27,7 @@ extension SchemaObjectType {
     // TODO: This method needs to throw rather than abort so it can be tested
     func assertConformanceToInterface(interface: SchemaInterface) {
         for interfaceField in interface.fields {
-            guard let objectField = fields.elementMatching(interfaceField) else {
+            guard let objectField = fields.memberMatching(interfaceField) else {
                 fatalError("\(interface.name) expects field \(interfaceField.name) but \(name) does not provide it.")
             }
 
@@ -37,7 +37,7 @@ extension SchemaObjectType {
 
             for interfaceArgument in interfaceField.arguments {
 
-                guard let objectArgument = objectField.arguments.elementMatching(interfaceArgument) else {
+                guard let objectArgument = objectField.arguments.memberMatching(interfaceArgument) else {
                     fatalError("\(interface.name).\(interfaceField.name) expects argument \(interfaceArgument.name) but \(name).\(objectField.name) does not provide it.")
                 }
 
@@ -45,7 +45,7 @@ extension SchemaObjectType {
 
             }
 
-            for objectArgument in objectField.arguments where interfaceField.arguments.elementMatching(objectArgument) == nil {
+            for objectArgument in objectField.arguments where !interfaceField.arguments.contains(objectArgument) {
                 switch objectArgument.type {
                 case .NonNull(_): fatalError("\(name).\(objectField.name)(\(objectArgument.name):) is of required type \(objectArgument.type) but is also not provided by the interface \(interface.name).\(interfaceField.name)")
                 default: continue
@@ -88,8 +88,8 @@ extension SchemaObjectFieldType {
         switch (self, hopefullySupertype) {
         case (.NonNull(let a), .NonNull(let b)): return a.isSubtypeOf(b)
         case (.List(let a), .List(let b)): return a.isSubtypeOf(b)
-        case (.Object(let implementation), .Interface(let interface)): return interface.possibleTypes.elementMatching(implementation) != nil
-        case (.Object(let implementation), .Union(let union)): return union.possibleTypes.elementMatching(implementation) != nil
+        case (.Object(let implementation), .Interface(let interface)): return interface.possibleTypes.contains(implementation)
+        case (.Object(let implementation), .Union(let union)): return union.possibleTypes.contains(implementation)
         default: return false
         }
     }

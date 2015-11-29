@@ -18,7 +18,7 @@ extension Tree {
     mutating func replaceChildAtIndex(index: Int, newValue: Node) {}
 }
 
-struct Location {
+public struct Location {
     let start: String.Index
     let end: String.Index
     let source: Source?
@@ -53,13 +53,15 @@ struct OperationDefinition: Definition, Tree {
 
     var type: NodeType { return .OperationDefinition }
 
-    var children: [Node] { return directives.map { $0 as Node } }
+    var children: [Node] { return directives.map { $0 as Node } + selectionSet.children }
 }
 
 struct Directive: Node {
     let name: Name
     let value: Value?
     let location: Location?
+
+    var type: NodeType { return .Directive }
 }
 
 struct FragmentDefinition: Definition, Tree {
@@ -171,7 +173,9 @@ struct Field: Selection, Tree {
     let selectionSet: SelectionSet?
     let location: Location?
 
-    var children: [Node] { return directives.map { $0 as Node } }
+    var children: [Node] { return directives.map { $0 as Node } + arguments.map { $0 as Node } }
+
+    var type: NodeType { return .Field }
 }
 
 struct FragmentSpread: Fragment, Tree {
@@ -196,6 +200,8 @@ struct Argument: Node {
     let name: Name
     let value: Value
     let location: Location?
+
+    var type: NodeType { return .Argument }
 }
 
 protocol Type: Node { }

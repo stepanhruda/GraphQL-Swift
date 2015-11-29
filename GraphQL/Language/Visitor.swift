@@ -8,12 +8,19 @@ enum VisitAction {
     case RemoveValue
 }
 
-enum NodeType {
-    case Any
-    case Document
-    case OperationDefinition
-    case FragmentDefinition
-    case FragmentSpread
+enum NodeType: String {
+    case Any = "Any"
+    case Document = "Document"
+    case OperationDefinition = "OperationDefinition"
+    case FragmentDefinition = "FragmentDefinition"
+    case FragmentSpread = "FragmentSpread"
+    case Field = "Field"
+    case Directive = "Directive"
+    case Argument = "Argument"
+
+    var identifier: String {
+        return rawValue
+    }
 }
 
 enum VisitError: ErrorType {
@@ -21,7 +28,7 @@ enum VisitError: ErrorType {
     case Stop
 }
 
-struct Visitor {
+struct Visitor: Identifiable {
     let nodeType: NodeType
     let enter: (Node throws -> VisitAction)?
     let leave: (Node throws -> VisitAction)?
@@ -30,6 +37,10 @@ struct Visitor {
         self.nodeType = nodeType
         self.enter = enter
         self.leave = leave
+    }
+
+    var identifier: String {
+        return nodeType.identifier
     }
 }
 

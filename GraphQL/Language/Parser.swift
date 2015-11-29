@@ -69,10 +69,10 @@ class Parser {
                 case Keyword.Fragment.rawValue:
                     definitions.append(try parseFragmentDefinition())
                 default:
-                    try unexpectedToken()
+                    throw unexpectedTokenError
                 }
             default:
-                try unexpectedToken()
+                throw unexpectedTokenError
             }
 
         } while try !skip(.EndOfFile)
@@ -315,8 +315,7 @@ class Parser {
             }
         default: break
         }
-        try unexpectedToken()
-        fatalError("^ error thrown here")
+        throw unexpectedTokenError
     }
 
     func parseArray(isConst isConst: Bool) throws -> Array {
@@ -400,8 +399,8 @@ class Parser {
         return try parseValue(isConst: false)
     }
 
-    func unexpectedToken() throws {
-        throw ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Unexpected \(currentToken)")
+    var unexpectedTokenError: ParserError {
+        return ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Unexpected \(currentToken)")
     }
 
     func parseZeroOrMoreBetweenDelimiters<T>(left left: TokenKind, function: () throws -> T, right: TokenKind) throws -> [T] {
@@ -423,11 +422,9 @@ class Parser {
     }
 
     func locateWithStart(start: String.Index) -> Location? {
-        if options.contains(ParseOptions.NoLocation) {
-            return nil
-        } else {
-            let source: Source? = options.contains(ParseOptions.NoLocation) ? nil : self.source
-            return Location(start: start, end: previousEnd, source: source)
-        }
+        guard !options.contains(ParseOptions.NoLocation) else { return nil }
+
+        let source: Source? = options.contains(ParseOptions.NoLocation) ? nil : self.source
+        return Location(start: start, end: previousEnd, source: source)
     }
 }

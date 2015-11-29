@@ -27,12 +27,11 @@ func failValidationForSchema(schema: Schema, ruleInitializers: [ValidationContex
             return false
         }
 
-        failureMessage.actualValue = nil
-        failureMessage.postfixMessage = "fail during validation"
-
         let document = try Parser.parse(Source(body: source))
         do {
-        try document.validateForSchema(schema, ruleInitializers: ruleInitializers)
+            failureMessage.actualValue = nil
+            failureMessage.postfixMessage = "fail during validation"
+            try document.validateForSchema(schema, ruleInitializers: ruleInitializers)
         } catch let error as DocumentValidationError {
             return withExpectedError(error)
         }

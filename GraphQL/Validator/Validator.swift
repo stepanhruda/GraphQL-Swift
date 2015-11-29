@@ -5,8 +5,8 @@ struct ValidationContext {
 }
 
 public enum DocumentValidationError: ErrorType {
-    case DuplicateOperationNames(Name, Name)
-    case Foo
+    case DuplicateOperationNames(name: String)
+    case DuplicateArgumentNames(name: String)
 }
 
 extension Document {
@@ -37,10 +37,11 @@ extension Document {
         try visit(Visitor(nodeType: .Any,
 
             enter: { node in
+                print("Entering \(node.type.rawValue)")
                 typeInfo.enter(node)
 
-                let visitor = rule.visitor()
-                guard let enter = visitor.enter where visitor.nodeType == .Any || visitor.nodeType == node.type else { return .Continue }
+                guard let visitor = rule.findVisitorForNode(node),
+                    let enter = visitor.enter else { return .Continue }
 
                 let action = try enter(node)
 
@@ -51,14 +52,25 @@ extension Document {
                 return action },
 
             leave: { node in
+                print("Leaving \(node.type.rawValue)")
 
-                let visitor = rule.visitor()
-                guard let leave = visitor.leave where visitor.nodeType == .Any || visitor.nodeType == node.type else { return .Continue }
+                guard let visitor = rule.findVisitorForNode(node),
+                    let leave = visitor.leave else { return .Continue }
 
                 let action = try leave(node)
                 
                 typeInfo.leave(node)
                 
                 return action }))
+    }
+}
+
+extension Rule {
+
+    private func findVisitorForNode(node: Node) -> Visitor? {
+        let cachedVisitors = visitors()
+        let specificVisitor = cachedVisitors.elementForIdentifier(node.type.identifier)
+        let anyVisitor = cachedVisitors.elementForIdentifier(NodeType.Any.identifier)
+        return specificVisitor ?? anyVisitor
     }
 }

@@ -6,23 +6,22 @@ final class UniqueOperationNames: Rule {
 
     var knownOperationNames: IdentitySet<Name> = []
 
-    func visitor() -> Visitor {
-        return Visitor(
+    func visitors() -> IdentitySet<Visitor> {
+        return [Visitor(
             nodeType: .OperationDefinition,
-            enter: { definition in
-                guard let operation = definition as? OperationDefinition else { return .Continue }
+            enter: { operation in
+                // TODO: How can this be strongly typed?
+                guard let operation = operation as? OperationDefinition else { return .Continue }
                 guard let name = operation.name else { return .Continue }
 
                 guard self.knownOperationNames.elementMatching(name) == nil else {
-
-                    throw DocumentValidationError.DuplicateOperationNames(self.knownOperationNames.elementMatching(name)!, name)
+                    throw DocumentValidationError.DuplicateOperationNames(name: name.value)
                 }
 
                 self.knownOperationNames.add(name)
 
                 return .Continue
-            }
-        )
+            })]
     }
 }
 

@@ -34,6 +34,8 @@
 		C0B3E2C41C0938DC00421A72 /* SchemaScalarType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2C31C0938DC00421A72 /* SchemaScalarType.swift */; };
 		C0B3E2C81C0A3C2200421A72 /* MultilineStringOperator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2C71C0A3C2200421A72 /* MultilineStringOperator.swift */; };
 		C0B3E2CA1C0A450600421A72 /* ValidatorHarness.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2C91C0A450600421A72 /* ValidatorHarness.swift */; };
+		C0B3E2CC1C0A56EF00421A72 /* UniqueArgumentNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2CB1C0A56EF00421A72 /* UniqueArgumentNames.swift */; };
+		C0B3E2CE1C0A99E400421A72 /* UniqueArgumentNamesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B3E2CD1C0A99E400421A72 /* UniqueArgumentNamesSpec.swift */; };
 		C0FE4CBB1B48BD68005217E2 /* Rule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE4CB81B48BD68005217E2 /* Rule.swift */; };
 		C0FE4CBC1B48BD68005217E2 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE4CBA1B48BD68005217E2 /* Validator.swift */; };
 		C0FE4CBE1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE4CBD1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift */; };
@@ -105,6 +107,8 @@
 		C0B3E2C31C0938DC00421A72 /* SchemaScalarType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaScalarType.swift; sourceTree = "<group>"; };
 		C0B3E2C71C0A3C2200421A72 /* MultilineStringOperator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultilineStringOperator.swift; path = GraphQLTests/Language/MultilineStringOperator.swift; sourceTree = SOURCE_ROOT; };
 		C0B3E2C91C0A450600421A72 /* ValidatorHarness.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorHarness.swift; sourceTree = "<group>"; };
+		C0B3E2CB1C0A56EF00421A72 /* UniqueArgumentNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniqueArgumentNames.swift; sourceTree = "<group>"; };
+		C0B3E2CD1C0A99E400421A72 /* UniqueArgumentNamesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniqueArgumentNamesSpec.swift; sourceTree = "<group>"; };
 		C0FE4CB81B48BD68005217E2 /* Rule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rule.swift; sourceTree = "<group>"; };
 		C0FE4CBA1B48BD68005217E2 /* Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
 		C0FE4CBD1B48BDC3005217E2 /* ArgumentsOfCorrectType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentsOfCorrectType.swift; sourceTree = "<group>"; };
@@ -242,6 +246,7 @@
 		C0B2A1CA1C0796D500FFE199 /* Rules */ = {
 			isa = PBXGroup;
 			children = (
+				C0B3E2CD1C0A99E400421A72 /* UniqueArgumentNamesSpec.swift */,
 				C0B2A1CE1C0796E200FFE199 /* UniqueOperationNamesSpec.swift */,
 			);
 			path = Rules;
@@ -303,9 +308,10 @@
 				C0FE4CD71B48BE28005217E2 /* OverlappingFieldsCanBeMerged.swift */,
 				C0FE4CD91B48BE30005217E2 /* PossibleFragmentSpreads.swift */,
 				C0FE4CDB1B48BE36005217E2 /* ScalarLeafs.swift */,
+				C0B3E2CB1C0A56EF00421A72 /* UniqueArgumentNames.swift */,
+				C06F7F761B856505006CF035 /* UniqueOperationNames.swift */,
 				C0FE4CDD1B48BE3E005217E2 /* VariableAreInputTypes.swift */,
 				C0FE4CDF1B48BE48005217E2 /* VariablesInAllowedPosition.swift */,
-				C06F7F761B856505006CF035 /* UniqueOperationNames.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -521,6 +527,7 @@
 				C0B3E2C41C0938DC00421A72 /* SchemaScalarType.swift in Sources */,
 				C0FE4CCE1B48BE04005217E2 /* KnownTypeNames.swift in Sources */,
 				C0B3E2C01C0937FC00421A72 /* SchemaValidName.swift in Sources */,
+				C0B3E2CC1C0A56EF00421A72 /* UniqueArgumentNames.swift in Sources */,
 				C0B3E2B61C09202E00421A72 /* SchemaDirective.swift in Sources */,
 				C0FE4CC21B48BDD5005217E2 /* DirectivesOfCorrectType.swift in Sources */,
 				C06F7F791B856769006CF035 /* Visitor.swift in Sources */,
@@ -540,6 +547,7 @@
 				C0B2A1CD1C0796D500FFE199 /* ParserSpec.swift in Sources */,
 				C0B3E2C81C0A3C2200421A72 /* MultilineStringOperator.swift in Sources */,
 				C0B2A1CF1C0796E200FFE199 /* UniqueOperationNamesSpec.swift in Sources */,
+				C0B3E2CE1C0A99E400421A72 /* UniqueArgumentNamesSpec.swift in Sources */,
 				C0B2A1D51C07BF0700FFE199 /* StarWarsSchema.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,7 +8,7 @@ class UniqueOperationNamesSpec: QuickSpec {
         let rule: [ValidationContext -> Rule] = [UniqueOperationNames.init]
         let schema = starWarsSchema
 
-        context("with no operations in a request") {
+        context("no operations in a request") {
             let string =
             "fragment fragA on Type {" ¶
             "  field" ¶
@@ -19,7 +19,7 @@ class UniqueOperationNamesSpec: QuickSpec {
             }
         }
 
-        context("with one anonymous operation in a request") {
+        context("one anonymous operation in a request") {
             let string =
             "{" ¶
             "  field" ¶
@@ -31,7 +31,7 @@ class UniqueOperationNamesSpec: QuickSpec {
             }
         }
 
-        context("with one named operation in a request") {
+        context("one named operation in a request") {
             let string =
             "query Foo {" ¶
             "  field" ¶
@@ -42,7 +42,7 @@ class UniqueOperationNamesSpec: QuickSpec {
             }
         }
 
-        context("with multiple differently named operations of the same type in a request") {
+        context("multiple differently named operations of the same type in a request") {
             let string =
             "query Foo {" ¶
             "  field" ¶
@@ -57,7 +57,7 @@ class UniqueOperationNamesSpec: QuickSpec {
             }
         }
 
-        context("with multiple differently named operations of different types in a request") {
+        context("multiple differently named operations of different types in a request") {
             let string =
             "query Foo {" ¶
             "  field" ¶
@@ -72,7 +72,7 @@ class UniqueOperationNamesSpec: QuickSpec {
             }
         }
 
-        context("with a fragment and an operation named the same in a request") {
+        context("a fragment and an operation named the same in a request") {
             let string =
             "query Foo {" ¶
             "  ...Foo" ¶
@@ -87,7 +87,7 @@ class UniqueOperationNamesSpec: QuickSpec {
             }
         }
 
-        context("with multiple same named operations of the same type in a request") {
+        context("multiple same named operations of the same type in a request") {
             let string =
             "query Foo {" ¶
             "  fieldA" ¶
@@ -100,16 +100,15 @@ class UniqueOperationNamesSpec: QuickSpec {
             it("fails validation") {
                 expect(string).to(failValidationForSchema(schema, ruleInitializers: rule) { error in
                     switch error {
-                    case .DuplicateOperationNames(let name1, let name2):
-                        return name1.value == "Foo" && name2.value == "Foo"
+                    case .DuplicateOperationNames(let name):
+                        return name == "Foo"
                     default: return false
                     }
                     })
             }
         }
 
-
-        context("with multiple same named operations of different types in a request") {
+        context("multiple same named operations of different types in a request") {
             let string =
             "query Foo {" ¶
             "  fieldA" ¶
@@ -122,8 +121,8 @@ class UniqueOperationNamesSpec: QuickSpec {
             it("fails validation") {
                 expect(string).to(failValidationForSchema(schema, ruleInitializers: rule) { error in
                     switch error {
-                    case .DuplicateOperationNames(let name1, let name2):
-                        return name1.value == "Foo" && name2.value == "Foo"
+                    case .DuplicateOperationNames(let name):
+                        return name == "Foo"
                     default: return false
                     }
                     })

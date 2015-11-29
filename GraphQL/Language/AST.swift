@@ -111,7 +111,7 @@ struct FragmentSpread: Fragment, HasSubtree, Named {
 }
 
 struct InlineFragment: Fragment, HasSubtree {
-    let typeCondition: NamedType
+    let typeCondition: NamedType?
     let directives: [Directive]
     let selectionSet: SelectionSet
     let location: Location?
@@ -227,7 +227,7 @@ struct ListType: InputType {
 
 struct Directive: Node, Named {
     let name: ValidName
-    let value: Value?
+    let arguments: [Argument]
     let location: Location?
 
     var type: NodeType { return .Directive }

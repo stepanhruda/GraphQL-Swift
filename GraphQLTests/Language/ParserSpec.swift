@@ -15,32 +15,36 @@ final class ParserSpec: QuickSpec {
                 "    name" ¶
                 "  }" ¶
                 "}"
-                let document = try! Parser.parse(Source(body: string))
+                expect {
+                    let document = try Parser.parse(Source(body: string))
 
-                expect(document.definitions.count) == 1
-                expect(document.definitions.first is OperationDefinition).to(beTrue())
-                let operationDefinition = document.definitions.first as! OperationDefinition
-                expect(operationDefinition.selectionSet.selections.count) == 1
+                    expect(document.definitions.count) == 1
+                    expect(document.definitions.first is OperationDefinition).to(beTrue())
+                    let operationDefinition = document.definitions.first as! OperationDefinition
+                    expect(operationDefinition.selectionSet.selections.count) == 1
 
-                expect(operationDefinition.selectionSet.selections.first is Field).to(beTrue())
-                let nodeSelectionField = operationDefinition.selectionSet.selections.first as! Field
-                expect(nodeSelectionField.name.string) == "node"
-                expect(nodeSelectionField.selectionSet?.selections.count) == 2
-                expect(nodeSelectionField.arguments.count) == 1
+                    expect(operationDefinition.selectionSet.selections.first is Field).to(beTrue())
+                    let nodeSelectionField = operationDefinition.selectionSet.selections.first as! Field
+                    expect(nodeSelectionField.name.string) == "node"
+                    expect(nodeSelectionField.selectionSet?.selections.count) == 2
+                    expect(nodeSelectionField.arguments.count) == 1
 
-                let idArgument = nodeSelectionField.arguments.first!
-                expect(idArgument.name.string) == "id"
-                expect(idArgument.value is IntValue).to(beTrue())
-                let idArgumentValue = idArgument.value as! IntValue
-                expect(idArgumentValue.value) == 4
+                    let idArgument = nodeSelectionField.arguments.first!
+                    expect(idArgument.name.string) == "id"
+                    expect(idArgument.value is IntValue).to(beTrue())
+                    let idArgumentValue = idArgument.value as! IntValue
+                    expect(idArgumentValue.value) == 4
 
-                expect(nodeSelectionField.selectionSet?.selections.first is Field).to(beTrue())
-                let idSelectionField = nodeSelectionField.selectionSet?.selections.first as! Field
-                expect(idSelectionField.name.string) == "id"
+                    expect(nodeSelectionField.selectionSet?.selections.first is Field).to(beTrue())
+                    let idSelectionField = nodeSelectionField.selectionSet?.selections.first as! Field
+                    expect(idSelectionField.name.string) == "id"
 
-                expect(nodeSelectionField.selectionSet?.selections.last is Field).to(beTrue())
-                let nameSelectionField = nodeSelectionField.selectionSet?.selections.last as! Field
-                expect(nameSelectionField.name.string) == "name"
+                    expect(nodeSelectionField.selectionSet?.selections.last is Field).to(beTrue())
+                    let nameSelectionField = nodeSelectionField.selectionSet?.selections.last as! Field
+                    expect(nameSelectionField.name.string) == "name"
+
+                    return nil
+                }.toNot(throwError())
             }
 
             it("parses the kitchen-sink example") {

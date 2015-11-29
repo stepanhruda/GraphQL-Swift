@@ -55,7 +55,7 @@ final class Parser {
             case .BraceLeft:
                 definitions.append(try parseShorthandQueryDefinition())
             case .Name:
-                let name = currentToken.value as! String
+                let name = try peekAtValueOfNameToken(currentToken)
                 switch name {
                 case query:
                     definitions.append(try parseOperationDefinitionOfType(.Query))
@@ -92,7 +92,7 @@ final class Parser {
         currentToken = try lexer(previousEnd)
     }
 
-    func nextTokenIs(kind: TokenKind) -> Bool {
+    func currentTokenIs(kind: TokenKind) -> Bool {
         return currentToken.kind == kind
     }
 
@@ -114,7 +114,7 @@ final class Parser {
         try advance()
         return OperationDefinition(
             operationType: type,
-            name: try parseName(),
+            name: try parseValidName(),
             variableDefinitions: try parseVariableDefinitions(),
             directives: try parseDirectives(),
             selectionSet: try parseSelectionSet(),
@@ -122,7 +122,7 @@ final class Parser {
     }
 
     func parseVariableDefinitions() throws -> [VariableDefinition] {
-        return nextTokenIs(.ParenLeft)
+        return currentTokenIs(.ParenLeft)
         ? try parseOneOrMoreBetweenDelimiters(left: .ParenLeft, function: parseVariableDefinition, right: .ParenRight)
         : []
     }
@@ -158,20 +158,24 @@ final class Parser {
     func parseNamedType() throws -> NamedType {
         let start = currentToken.start
         let token = try expect(.Name)
-        return NamedType(value: token.value as! String, location: locateWithStart(start))
+        return NamedType(value: try peekAtValueOfNameToken(token), location: locateWithStart(start))
     }
 
     func parseFragmentDefinition() throws -> FragmentDefinition {
         let start = currentToken.start
         try expectKeyword(fragment)
-        let name = try parseName()
-        guard name.string != on else { throw unexpectedTokenError }
         return FragmentDefinition(
-            name: name,
+            name: try parseFragmentName(),
             typeCondition: try parseTypeCondition(),
             directives: try parseDirectives(),
             selectionSet: try parseSelectionSet(),
             location: locateWithStart(start))
+    }
+
+    func parseFragmentName() throws -> ValidName {
+        let name = try parseValidName()
+        guard name.string != on else { throw unexpectedTokenError }
+        return name
     }
 
     func parseTypeCondition() throws -> NamedType {
@@ -189,10 +193,10 @@ final class Parser {
         return token
     }
 
-    func parseName() throws -> ValidName {
+    func parseValidName() throws -> ValidName {
         let start = currentToken.start
         let token = try expect(.Name)
-        return ValidName(string: token.value as! String, location: locateWithStart(start))
+        return ValidName(string: try peekAtValueOfNameToken(token), location: locateWithStart(start))
     }
 
     func expect(kind: TokenKind) throws -> Token {
@@ -213,23 +217,34 @@ final class Parser {
     }
 
     func parseSelection() throws -> Selection {
-        return nextTokenIs(.Spread) ? try parseFragment() : try parseField()
+        return currentTokenIs(.Spread) ? try parseFragment() : try parseField()
     }
 
     func parseFragment() throws -> Fragment {
         let start = currentToken.start
         try expect(.Spread)
-        switch currentToken.value as! String {
-        case on:
+
+        if currentTokenIs(.Name) {
+
+            switch try peekAtValueOfNameToken(currentToken) {
+            case on:
+                return InlineFragment(
+                    typeCondition: try parseTypeCondition(),
+                    directives: try parseDirectives(),
+                    selectionSet: try parseSelectionSet(),
+                    location: locateWithStart(start))
+            default:
+                return FragmentSpread(
+                    name: try parseFragmentName(),
+                    directives: try parseDirectives(),
+                    location: locateWithStart(start))
+            }
+
+        } else {
             return InlineFragment(
-                typeCondition: try parseTypeCondition(),
+                typeCondition: nil,
                 directives: try parseDirectives(),
                 selectionSet: try parseSelectionSet(),
-                location: locateWithStart(start))
-        default:
-            return FragmentSpread(
-                name: try parseName(),
-                directives: try parseDirectives(),
                 location: locateWithStart(start))
         }
     }
@@ -237,13 +252,13 @@ final class Parser {
     func parseField() throws -> Field {
         let start = currentToken.start
 
-        let nameOrAlias = try parseName()
+        let nameOrAlias = try parseValidName()
 
         var alias: ValidName?
         var name: ValidName
         if try skipping(.Colon) {
             alias = nameOrAlias
-            name = try parseName()
+            name = try parseValidName()
         } else {
             alias = nil
             name = nameOrAlias
@@ -254,12 +269,12 @@ final class Parser {
             name: name,
             arguments: try parseArguments(),
             directives: try parseDirectives(),
-            selectionSet: nextTokenIs(.BraceLeft) ? try parseSelectionSet() : nil,
+            selectionSet: currentTokenIs(.BraceLeft) ? try parseSelectionSet() : nil,
             location: locateWithStart(start))
     }
 
     func parseArguments() throws -> [Argument] {
-        return nextTokenIs(.ParenLeft)
+        return currentTokenIs(.ParenLeft)
             ? try parseOneOrMoreBetweenDelimiters(left: .ParenLeft, function: parseArgument, right: .ParenRight)
             : []
     }
@@ -267,7 +282,7 @@ final class Parser {
     func parseArgument() throws -> Argument {
         let start = currentToken.start
         return Argument(
-            name: try parseName(),
+            name: try parseValidName(),
             value: try parseArgumentValue(),
             location: locateWithStart(start))
     }
@@ -279,7 +294,7 @@ final class Parser {
 
     func parseDirectives() throws -> [Directive] {
         var directives: [Directive] = []
-        while nextTokenIs(.At) {
+        while currentTokenIs(.At) {
             directives.append(try parseDirective())
         }
         return directives
@@ -289,26 +304,26 @@ final class Parser {
         let start = currentToken.start
         try expect(.At)
         return Directive(
-            name: try parseName(),
-            value: try skipping(.Colon) ? try parseValue(isConst: false) : nil,
+            name: try parseValidName(),
+            arguments: try parseArguments(),
             location: locateWithStart(start))
     }
 
     func parseValue(isConst isConst: Bool) throws -> Value {
         switch currentToken.kind {
-        case TokenKind.BracketLeft:
+        case .BracketLeft:
             return try parseArray(isConst: isConst)
-        case TokenKind.BraceLeft:
+        case .BraceLeft:
             return try parseInputObject(isConst: isConst)
-        case TokenKind.Int:
-            return try parseInt()
-        case TokenKind.Float:
-            return try parseFloat()
-        case TokenKind.String:
-            return try parseString()
-        case TokenKind.Name:
-            return try parseBoolOrEnum()
-        case TokenKind.Dollar:
+        case .Int:
+            return try parseIntValue()
+        case .Float:
+            return try parseFloatValue()
+        case .String:
+            return try parseStringValue()
+        case .Name:
+            return try parseBoolOrEnumValue()
+        case .Dollar:
             if (!isConst) {
                 return try parseVariable()
             }
@@ -325,19 +340,19 @@ final class Parser {
             location: locateWithStart(start))
     }
 
-    func parseInt() throws -> IntValue {
+    func parseIntValue() throws -> IntValue {
         let token = currentToken
         try advance()
         return IntValue(value: token.value as! Int, location: locateWithStart(token.start))
     }
 
-    func parseFloat() throws -> FloatValue {
+    func parseFloatValue() throws -> FloatValue {
         let token = currentToken
         try advance()
         return FloatValue(value: token.value as! Float, location: locateWithStart(token.start))
     }
 
-    func parseString() throws -> StringValue {
+    func parseStringValue() throws -> StringValue {
         let token = currentToken
         try advance()
         return StringValue(value: token.value as! String, location: locateWithStart(token.start))
@@ -346,17 +361,15 @@ final class Parser {
     func parseVariable() throws -> Variable {
         let start = currentToken.start
         try expect(.Dollar)
-        return Variable(name: try parseName(), location: locateWithStart(start))
+        return Variable(name: try parseValidName(), location: locateWithStart(start))
     }
 
-    func parseBoolOrEnum() throws -> Value {
+    func parseBoolOrEnumValue() throws -> Value {
         let start = currentToken.start
-        let string = currentToken.value as! String
-        try advance()
-        switch string {
+        switch try parseValueOfNameToken() {
         case "true": return BoolValue(value: true, location: locateWithStart(start))
         case "false": return BoolValue(value: false, location: locateWithStart(start))
-        default: return EnumValue(value: string, location: locateWithStart(start))
+        case let string: return EnumValue(value: string, location: locateWithStart(start))
         }
     }
 
@@ -374,7 +387,7 @@ final class Parser {
 
     func parseInputObjectField(isConst isConst: Bool, inout existingFieldNames: [ValidName]) throws -> InputObjectField {
         let start = currentToken.start
-        let name = try parseName()
+        let name = try parseValidName()
         guard !(existingFieldNames.contains { $0.string == name.string }) else {
             throw ParserError(code: .DuplicateInputObjectField, source: source, position: previousEnd, description: "Duplicate input object field \(name.string)")
         }
@@ -397,6 +410,18 @@ final class Parser {
 
     func parseVariableValue() throws -> Value {
         return try parseValue(isConst: false)
+    }
+
+    func parseValueOfNameToken() throws -> String {
+        let name = try peekAtValueOfNameToken(currentToken)
+        try advance()
+        return name
+    }
+
+    func peekAtValueOfNameToken(token: Token) throws -> String {
+        guard token.kind == .Name else { throw unexpectedTokenError }
+        guard let name = token.value as? String else { throw unexpectedTokenError }
+        return name
     }
 
     var unexpectedTokenError: ParserError {

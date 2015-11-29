@@ -43,17 +43,22 @@ struct Document: Subtree {
 protocol Definition: Node {
 }
 
+enum OperationType {
+    case Query
+    case Mutation
+}
+
 struct OperationDefinition: Definition, Subtree {
-    let operation: String
+    let operationType: OperationType
     let name: Name?
     let variableDefinitions: [VariableDefinition]?
-    let directives: [Directive]
+    let directives: [Directive]?
     let selectionSet: SelectionSet
     let location: Location?
 
     var type: NodeType { return .OperationDefinition }
 
-    var children: [Node] { return directives.map { $0 as Node } + selectionSet.children }
+    var children: [Node] { return selectionSet.children }
 }
 
 struct Directive: Node {

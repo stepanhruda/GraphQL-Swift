@@ -23,13 +23,6 @@ struct ParseOptions: OptionSetType {
     static let NoSource = ParseOptions(rawValue: 1 << 1)
 }
 
-enum Keyword: String {
-    case Fragment = "fragment"
-    case Mutation = "mutation"
-    case On = "on"
-    case Query = "query"
-}
-
 class Parser {
     let lexer: String.Index? throws -> Token
     let source: Source
@@ -60,13 +53,15 @@ class Parser {
 
             switch currentToken.kind {
             case .BraceLeft:
-                definitions.append(try parseOperationDefinition())
+                definitions.append(try parseShorthandQueryDefinition())
             case .Name:
                 let name = currentToken.value as! String
                 switch name {
-                case Keyword.Query.rawValue, Keyword.Mutation.rawValue:
-                    definitions.append(try parseOperationDefinition())
-                case Keyword.Fragment.rawValue:
+                case query:
+                    definitions.append(try parseOperationDefinitionOfType(.Query))
+                case mutation:
+                    definitions.append(try parseOperationDefinitionOfType(.Mutation))
+                case fragment:
                     definitions.append(try parseFragmentDefinition())
                 default:
                     throw unexpectedTokenError
@@ -98,28 +93,29 @@ class Parser {
         return currentToken.kind == kind
     }
 
-    func parseOperationDefinition() throws -> OperationDefinition {
+    func parseShorthandQueryDefinition() throws -> OperationDefinition {
         let start = currentToken.start
 
-        if nextTokenIs(.BraceLeft) {
-            return OperationDefinition(
-                operation: Keyword.Query.rawValue,
-                name: nil,
-                variableDefinitions: nil,
-                directives: [],
-                selectionSet: try parseSelectionSet(),
-                location: locateWithStart(start))
-        } else {
-            let operationToken = try expect(.Name)
-            let operation = operationToken.value as! String
-            return OperationDefinition(
-                operation: operation,
-                name: try parseName(),
-                variableDefinitions: try parseVariableDefinitions(),
-                directives: try parseDirectives(),
-                selectionSet: try parseSelectionSet(),
-                location: locateWithStart(start))
-        }
+        return OperationDefinition(
+            operationType: .Query,
+            name: nil,
+            variableDefinitions: nil,
+            directives: nil,
+            selectionSet: try parseSelectionSet(),
+            location: locateWithStart(start))
+    }
+
+    func parseOperationDefinitionOfType(type: OperationType) throws -> OperationDefinition {
+        let start = currentToken.start
+
+        try advance()
+        return OperationDefinition(
+            operationType: type,
+            name: try parseName(),
+            variableDefinitions: try parseVariableDefinitions(),
+            directives: try parseDirectives(),
+            selectionSet: try parseSelectionSet(),
+            location: locateWithStart(start))
     }
 
     func parseVariableDefinitions() throws -> [VariableDefinition] {
@@ -164,7 +160,7 @@ class Parser {
 
     func parseFragmentDefinition() throws -> FragmentDefinition {
         let start = currentToken.start
-        try expectKeyword(.Fragment)
+        try expectKeyword(fragment)
         return FragmentDefinition(
             name: try parseName(),
             typeCondition: try parseTypeCondition(),
@@ -174,14 +170,14 @@ class Parser {
     }
 
     func parseTypeCondition() throws -> Name {
-        try expectKeyword(.On)
+        try expectKeyword(on)
         return try parseName()
     }
 
-    func expectKeyword(keyword: Keyword) throws -> Token {
+    func expectKeyword(keyword: String) throws -> Token {
         guard currentToken.kind == .Name,
-            let value = currentToken.value as? String where value == keyword.rawValue else {
-            throw ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Expected \(keyword.rawValue), found \(currentToken)")
+            let value = currentToken.value as? String where value == keyword else {
+            throw ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Expected \(keyword), found \(currentToken)")
         }
         let token = currentToken
         try advance()
@@ -219,7 +215,7 @@ class Parser {
         let start = currentToken.start
         try expect(.Spread)
         switch currentToken.value as! String {
-        case Keyword.On.rawValue:
+        case on:
             try advance()
 
             return InlineFragment(
@@ -428,3 +424,8 @@ class Parser {
         return Location(start: start, end: previousEnd, source: source)
     }
 }
+
+private let query = "query"
+private let mutation = "mutation"
+private let fragment = "fragment"
+private let on = "on"

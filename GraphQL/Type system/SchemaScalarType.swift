@@ -3,6 +3,7 @@ public enum SchemaScalarType {
     case Float
     case String
     case Boolean
+    case ID
 }
 
 public func ==(left: SchemaScalarType, right: SchemaScalarType) -> Bool {
@@ -11,6 +12,7 @@ public func ==(left: SchemaScalarType, right: SchemaScalarType) -> Bool {
     case (.Float, .Float): return true
     case (.String, .String): return true
     case (.Boolean, .Boolean): return true
+    case (.ID, .ID): return true
     default: return false
     }
 }

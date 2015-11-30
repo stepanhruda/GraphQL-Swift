@@ -1,48 +1,26 @@
-enum ParserErrorCode: Int {
-    case UnexpectedToken
-    case DuplicateInputObjectField
-}
-
-struct ParserError: ErrorType {
-    let code: ParserErrorCode
-    let source: Source
-    let position: String.Index
-    let description: String?
-
-    init(code: ParserErrorCode, source: Source, position: String.Index, description: String? = nil) {
-        self.code = code
-        self.source = source
-        self.position = position
-        self.description = description
-    }
-}
-
-struct ParseOptions: OptionSetType {
-    let rawValue: UInt
-    static let NoLocation = ParseOptions(rawValue: 1 << 0)
-    static let NoSource = ParseOptions(rawValue: 1 << 1)
-}
-
 final class Parser {
     let lexer: String.Index? throws -> Token
     let source: Source
-    let options: ParseOptions
+    let options: ParserOptions
     var previousEnd: String.Index
     var currentToken: Token
 
-    static func parse(source: Source, options: ParseOptions = ParseOptions()) throws -> Document {
+    static func parse(source: Source, options: ParserOptions = []) throws -> Document {
         let lexer = Lexer.functionForSource(source)
         let parser = Parser(lexer: lexer, source: source, options: options, previousEnd: source.body.startIndex, token: try lexer(nil))
         return try parser.parseDocument()
     }
 
-
-    init(lexer: String.Index? throws -> Token, source: Source, options: ParseOptions, previousEnd: String.Index, token: Token) {
-        self.lexer = lexer
-        self.source = source
-        self.options = options
-        self.previousEnd = previousEnd
-        self.currentToken = token
+    init(lexer: String.Index? throws -> Token,
+        source: Source,
+        options: ParserOptions,
+        previousEnd: String.Index,
+        token: Token) {
+            self.lexer = lexer
+            self.source = source
+            self.options = options
+            self.previousEnd = previousEnd
+            self.currentToken = token
     }
 
     func parseDocument() throws -> Document {
@@ -186,7 +164,7 @@ final class Parser {
     func expectKeyword(keyword: String) throws -> Token {
         guard currentToken.kind == .Name,
             let value = currentToken.value as? String where value == keyword else {
-            throw ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Expected \(keyword), found \(currentToken)")
+            throw ParserError.UnexpectedToken(source: source, position: previousEnd, description: "Expected \(keyword), found \(currentToken)")
         }
         let token = currentToken
         try advance()
@@ -205,7 +183,7 @@ final class Parser {
             try advance()
             return token
         } else {
-            throw ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Expected \(kind), found \(currentToken.kind)")
+            throw ParserError.UnexpectedToken(source: source, position: previousEnd, description: "Expected \(kind), found \(currentToken.kind)")
         }
     }
 
@@ -342,20 +320,23 @@ final class Parser {
 
     func parseIntValue() throws -> IntValue {
         let token = currentToken
+        guard let value = token.value as? Int else { throw unexpectedTokenError }
         try advance()
-        return IntValue(value: token.value as! Int, location: locateWithStart(token.start))
+        return IntValue(value: value, location: locateWithStart(token.start))
     }
 
     func parseFloatValue() throws -> FloatValue {
         let token = currentToken
+        guard let value = token.value as? Float else { throw unexpectedTokenError }
         try advance()
-        return FloatValue(value: token.value as! Float, location: locateWithStart(token.start))
+        return FloatValue(value: value, location: locateWithStart(token.start))
     }
 
     func parseStringValue() throws -> StringValue {
         let token = currentToken
+        guard let value = token.value as? String else { throw unexpectedTokenError }
         try advance()
-        return StringValue(value: token.value as! String, location: locateWithStart(token.start))
+        return StringValue(value: value, location: locateWithStart(token.start))
     }
 
     func parseVariable() throws -> Variable {
@@ -389,7 +370,7 @@ final class Parser {
         let start = currentToken.start
         let name = try parseValidName()
         guard !(existingFieldNames.contains { $0.string == name.string }) else {
-            throw ParserError(code: .DuplicateInputObjectField, source: source, position: previousEnd, description: "Duplicate input object field \(name.string)")
+            throw ParserError.DuplicateInputObjectField(source: source, position: previousEnd, description: "Duplicate input object field \(name.string)")
         }
         existingFieldNames.append(name)
 
@@ -425,7 +406,7 @@ final class Parser {
     }
 
     var unexpectedTokenError: ParserError {
-        return ParserError(code: .UnexpectedToken, source: source, position: previousEnd, description: "Unexpected \(currentToken)")
+        return ParserError.UnexpectedToken(source: source, position: previousEnd, description: "Unexpected \(currentToken)")
     }
 
     func parseZeroOrMoreBetweenDelimiters<T>(left left: TokenKind, function: () throws -> T, right: TokenKind) throws -> [T] {
@@ -447,11 +428,23 @@ final class Parser {
     }
 
     func locateWithStart(start: String.Index) -> Location? {
-        guard !options.contains(ParseOptions.NoLocation) else { return nil }
+        guard !options.contains(ParserOptions.NoLocation) else { return nil }
 
-        let source: Source? = options.contains(ParseOptions.NoLocation) ? nil : self.source
+        let source: Source? = options.contains(ParserOptions.NoLocation) ? nil : self.source
         return Location(start: start, end: previousEnd, source: source)
     }
+}
+
+enum ParserError: ErrorType {
+    case UnexpectedToken(source: Source, position: String.Index, description: String)
+    // This has been moved to a rule
+    case DuplicateInputObjectField(source: Source, position: String.Index, description: String)
+}
+
+struct ParserOptions: OptionSetType {
+    let rawValue: UInt
+    static let NoLocation = ParserOptions(rawValue: 1 << 0)
+    static let NoSource = ParserOptions(rawValue: 1 << 1)
 }
 
 private let query = "query"

@@ -10,7 +10,7 @@ final class LexerSpec: QuickSpec {
             func lex(string: String) throws -> (Token, String.Index) {
                 let source = Source(body: string)
                 let lexer = Lexer.functionForSource(source)
-                return (try lexer(nil), source.body.startIndex)
+                return (try lexer(position: nil), source.body.startIndex)
             }
 
             it("skips whitespace") {
@@ -66,8 +66,8 @@ final class LexerSpec: QuickSpec {
             it("lexes two tokens") {
                 let source = Source(body: "foo bar")
                 let lexer = Lexer.functionForSource(source)
-                var token = try! lexer(nil)
-                token = try! lexer(token.end)
+                var token = try! lexer(position: nil)
+                token = try! lexer(position: token.end)
                 expect(token.kind) == TokenKind.Name
                 expect(token.start) == source.body.startIndex + 4
                 expect(token.end) == source.body.endIndex

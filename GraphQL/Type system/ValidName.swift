@@ -1,4 +1,4 @@
-public struct ValidName: StringLiteralConvertible, Hashable {
+public struct ValidName: StringLiteralConvertible {
     public let string: String
     public let location: Location?
 
@@ -22,6 +22,9 @@ public struct ValidName: StringLiteralConvertible, Hashable {
         self.init(string: value)
     }
 
+}
+
+extension ValidName: Hashable {
     public var hashValue: Int { return string.hashValue }
 }
 

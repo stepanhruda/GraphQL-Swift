@@ -1,14 +1,14 @@
-public final class SchemaUnion: Named {
+public final class SchemaUnion: SchemaType {
     public let name: ValidName
     let description: String?
-    let possibleTypes: IdentitySet<SchemaObjectType>
-    let resolve: Any -> SchemaObjectType
+    let possibleTypes: IdentitySet<SchemaObject>
+    let resolve: Any -> SchemaObject
 
     public init(
         name: ValidName,
         description: String? = nil,
-        possibleTypes: IdentitySet<SchemaObjectType>,
-        resolve: Any -> SchemaObjectType
+        possibleTypes: IdentitySet<SchemaObject>,
+        resolve: Any -> SchemaObject
         ) {
             self.name = name
             self.description = description

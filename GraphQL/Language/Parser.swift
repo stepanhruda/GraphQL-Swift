@@ -5,10 +5,10 @@ final class Parser {
     var previousEnd: String.Index
     var currentToken: Token
 
-    static func parse(source: Source, options: ParserOptions = []) throws -> Document {
+    static func parse(source: Source, options: ParserOptions = []) throws -> AbstractSyntaxTree {
         let lexer = Lexer.functionForSource(source)
-        let parser = Parser(lexer: lexer, source: source, options: options, previousEnd: source.body.startIndex, token: try lexer(nil))
-        return try parser.parseDocument()
+        let parser = Parser(lexer: lexer, source: source, options: options, previousEnd: source.body.startIndex, token: try lexer(position: nil))
+        return try parser.parse()
     }
 
     init(lexer: String.Index? throws -> Token,
@@ -23,7 +23,7 @@ final class Parser {
             self.currentToken = token
     }
 
-    func parseDocument() throws -> Document {
+    func parse() throws -> AbstractSyntaxTree {
         let start = currentToken.start
         var definitions: [Definition] = []
 
@@ -50,7 +50,7 @@ final class Parser {
 
         } while try !skipping(.EndOfFile)
 
-        return Document(definitions: definitions, location: locateWithStart(start))
+        return AbstractSyntaxTree(definitions: definitions, location: locateWithStart(start))
     }
 
     /// If the next token is of the given kind, `skipping` skips over it and returns `true`.

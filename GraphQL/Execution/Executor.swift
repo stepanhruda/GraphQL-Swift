@@ -1,3 +1,3 @@
-func execute(schema schema: Schema, rootValue: Any?, document: Document, operationName: Any?, variableValues: Any?) {
+func execute(schema schema: Schema, rootValue: Any?, request: AbstractSyntaxTree, operationName: Any?, variableValues: Any?) {
 
 }

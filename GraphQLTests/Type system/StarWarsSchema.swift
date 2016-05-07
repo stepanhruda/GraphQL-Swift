@@ -2,21 +2,21 @@ import GraphQL
 
 let starWarsSchema = { () -> Schema in
     var characterInterface: SchemaInterface!
-    var droidType: SchemaObjectType!
-    var humanType: SchemaObjectType!
+    var droidType: SchemaObject!
+    var humanType: SchemaObject!
 
-    let episodeEnum = SchemaEnum(
+    let episodeEnum = SchemaEnum<Movie>(
         name: "Episode",
         description: "One of the films in the Star Wars Trilogy",
         values: [
             SchemaEnumValue(
-                value: Movie.NewHope.rawValue,
+                value: .NewHope,
                 description: "Released in 1977."),
             SchemaEnumValue(
-                value: Movie.EmpireStrikesBack.rawValue,
+                value: .EmpireStrikesBack,
                 description: "Released in 1980."),
             SchemaEnumValue(
-                value: Movie.ReturnOfTheJedi.rawValue,
+                value: .ReturnOfTheJedi,
                 description: "Released in 1983."),
         ])
 
@@ -26,19 +26,19 @@ let starWarsSchema = { () -> Schema in
         fields: { [
             SchemaObjectField(
                 name: "id",
-                type: .NonNull(.Scalar(.String)),
+                type: NonNull(StringType()),
                 description: "The id of the character."),
             SchemaObjectField(
                 name: "name",
-                type: .Scalar(.String),
+                type: StringType(),
                 description: "The name of the character."),
             SchemaObjectField(
                 name: "friends",
-                type: .List(.Interface(characterInterface)),
+                type: List(characterInterface),
                 description: "The friends of the character, or an empty list if they have none."),
             SchemaObjectField(
                 name: "appearsIn",
-                type: .Enum(episodeEnum),
+                type: episodeEnum,
                 description: "Which movies they appear in."),
             ] },
         resolveType: { toResolve in
@@ -46,52 +46,52 @@ let starWarsSchema = { () -> Schema in
             return Human.getById(character.id) != nil ? humanType : droidType })
     characterInterface = characterInterfaceDefinition
 
-    let humanTypeDefinition = SchemaObjectType(
+    let humanTypeDefinition = SchemaObject(
         name: "Human",
         description: "A humanoid creature in the Star Wars universe.",
         fields: { [
             SchemaObjectField(
                 name: "id",
-                type: .NonNull(.Scalar(.String)),
+                type: NonNull(StringType()),
                 description: "The id of the human."),
             SchemaObjectField(
                 name: "name",
-                type: .Scalar(.String),
+                type: StringType(),
                 description: "The name of the human."),
             SchemaObjectField(
                 name: "friends",
-                type: .List(.Interface(characterInterface)),
+                type: List(characterInterface),
                 description: "The friends of the human, or an empty list if they have none.",
                 resolve: { toResolve in
                     let human = toResolve as! Human
                     return human.getFriends() }),
             SchemaObjectField(
                 name: "appearsIn",
-                type: .List(.Enum(episodeEnum)),
+                type: List(episodeEnum),
                 description: "Which movies they appear in."),
             SchemaObjectField(
                 name: "homePlanet",
-                type: .Scalar(.String),
+                type: StringType(),
                 description: "The home planet of the human, or null if unknown.")
             ] },
         interfaces: [characterInterface])
     humanType = humanTypeDefinition
 
-    let droidTypeDefinition = SchemaObjectType(
+    let droidTypeDefinition = SchemaObject(
         name: "Droid",
         description: "A mechanical creature in the Star Wars universe.",
         fields: { [
             SchemaObjectField(
                 name: "id",
-                type: .NonNull(.Scalar(.String)),
+                type: NonNull(StringType()),
                 description: "The id of the droid."),
             SchemaObjectField(
                 name: "name",
-                type: .Scalar(.String),
+                type: StringType(),
                 description: "The name of the droid."),
             SchemaObjectField(
                 name: "friends",
-                type: .List(.Interface(characterInterface)),
+                type: List(characterInterface),
                 description: "The friends of the droid, or an empty list if they have none.",
                 resolve: { toResolve in
                     let droid = toResolve as! Droid
@@ -99,27 +99,27 @@ let starWarsSchema = { () -> Schema in
             }),
             SchemaObjectField(
                 name: "appearsIn",
-                type: .List(.Enum(episodeEnum)),
+                type: List(episodeEnum),
                 description: "Which movies they appear in."),
             SchemaObjectField(
                 name: "primaryFunction",
-                type: .Scalar(.String),
+                type: StringType(),
                 description: "The primary function of the droid."),
             ] },
-        
+
         interfaces: [characterInterface])
     droidType = droidTypeDefinition
 
-    let queryType = SchemaObjectType(
+    let queryType = SchemaObject(
         name: "Query",
         fields: { [
             SchemaObjectField(
                 name: "hero",
-                type: .Interface(characterInterface),
+                type: characterInterface,
                 arguments: [
                     SchemaInputValue(
                         name: "episode",
-                        type: .Enum(episodeEnum),
+                        type: episodeEnum,
                         description: "If omitted, returns the hero of the whole saga. If provided, returns the hero of that particular episode."
                     ),
                 ],
@@ -130,11 +130,11 @@ let starWarsSchema = { () -> Schema in
             ),
             SchemaObjectField(
                 name: "human",
-                type: .Object(humanType),
+                type: humanType,
                 arguments: [
                     SchemaInputValue(
                         name: "id",
-                        type: .NonNull(.Scalar(.String)),
+                        type: NonNull(StringType()),
                         description: "id of the human"),
                 ],
                 resolve: { toResolve in
@@ -144,11 +144,11 @@ let starWarsSchema = { () -> Schema in
             ),
             SchemaObjectField(
                 name: "droid",
-                type: .Object(droidType),
+                type: droidType,
                 arguments: [
                     SchemaInputValue(
                         name: "id",
-                        type: .NonNull(.Scalar(.String)),
+                        type: NonNull(StringType()),
                         description: "id of the droid"),
                 ],
                 resolve: { toResolve in

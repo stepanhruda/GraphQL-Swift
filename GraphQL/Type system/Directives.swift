@@ -4,7 +4,7 @@ public let includeDirective = SchemaDirective(
     arguments: [
         SchemaInputValue(
             name: "if",
-            type: .NonNull(.Scalar(.Boolean)),
+            type: NonNull(Boolean()),
             description: "Included when true."),
     ],
     onFragment: true,
@@ -16,7 +16,7 @@ public let skipDirective = SchemaDirective(
     arguments: [
         SchemaInputValue(
             name: "if",
-            type: .NonNull(.Scalar(.Boolean)),
+            type: NonNull(Boolean()),
             description: "Skipped when true."),
     ],
     onFragment: true,

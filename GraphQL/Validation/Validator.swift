@@ -1,6 +1,6 @@
 struct ValidationContext {
     let schema: Schema
-    let document: Document
+    let document: AbstractSyntaxTree
     let typeInfo: TypeInfo
 }
 
@@ -11,7 +11,7 @@ public enum DocumentValidationError: ErrorType {
     case VariableIsNonInputType
 }
 
-extension Document {
+extension AbstractSyntaxTree {
     func validateForSchema(schema: Schema, ruleInitializers: [ValidationContext -> Rule] = allRules) throws {
         let typeInfo = TypeInfo(schema: schema)
         let context = ValidationContext(schema: schema, document: self, typeInfo: typeInfo)

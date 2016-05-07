@@ -12,7 +12,7 @@ struct LexerError: ErrorType {
 }
 
 struct Lexer {
-    static func functionForSource(source: Source) -> (String.Index? throws -> Token) {
+    static func functionForSource(source: Source) -> ((position: String.Index?) throws -> Token) {
         var previousPosition = source.body.startIndex
         return { position in
             let token = try readSource(source, position: position ?? previousPosition)
@@ -67,7 +67,7 @@ struct Lexer {
 
         for character in body[start..<body.endIndex].characters.generate() {
             guard character.isValidNameCharacter else { break }
-            end++
+            end = end.successor()
         }
 
         return Token(kind: .Name, start: start, end: end, value: body[start..<end])
@@ -82,7 +82,7 @@ struct Lexer {
         let nextCharacter: Void -> Character? = {
             let next = generator.next()
             guard let _ = next else { return next }
-            end++
+            end = end.successor()
             return next
         }
 
@@ -138,7 +138,7 @@ struct Lexer {
             }
         }
 
-        if lastCharacterInvalid { end-- }
+        if lastCharacterInvalid { end = end.predecessor() }
 
         let value = body[start..<end]
         // IMPROVEMENT: Raise error if the number cannot be converted
@@ -155,10 +155,10 @@ struct Lexer {
         var charactersToSkip = 0
 
         lexing: for character in body[(start + 1)..<body.endIndex].characters.generate() {
-            end++
+            end = end.successor()
 
             if (charactersToSkip > 0) {
-                --charactersToSkip > 0
+                charactersToSkip -= 1
                 continue
             }
 
@@ -227,12 +227,12 @@ struct Lexer {
         search: for character in body[start..<body.endIndex].characters.generate() {
             if (!insideComment) {
                 switch character {
-                case " ", ",", "\t"..."\r", "\u{2028}", "\u{2029}" : position++
-                case "#": insideComment = true; position++
+                case " ", ",", "\t"..."\r", "\u{2028}", "\u{2029}" : position = position.successor()
+                case "#": insideComment = true; position = position.successor()
                 default: break search
                 }
             } else {
-                position++
+                position = position.successor()
                 switch character {
                 case "\n", "\r", "\u{2028}", "\u{2029}": insideComment = false
                 default: continue
@@ -246,11 +246,11 @@ struct Lexer {
 
 
 
-func + (left: String.Index, right: Int) -> String.Index {
+func + (left: String.CharacterView.Index, right: Int) -> String.CharacterView.Index {
     return left.advancedBy(right)
 }
 
-func - (left: String.Index, right: Int) -> String.Index {
+func - (left: String.CharacterView.Index, right: Int) -> String.CharacterView.Index {
     return left.advancedBy(-right)
 }
 

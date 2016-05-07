@@ -1,4 +1,4 @@
-public final class SchemaObjectType: Named {
+public final class SchemaObject: SchemaType, AllowedAsObjectField, AllowedAsNonNull {
     public let name: ValidName
     let description: String?
 
@@ -19,19 +19,19 @@ public final class SchemaObjectType: Named {
     }
 }
 
-public indirect enum SchemaObjectFieldType {
-    case Scalar(SchemaScalarType)
-    case Object(SchemaObjectType)
-    case Interface(SchemaInterface)
-    case Union(SchemaUnion)
-    case Enum(SchemaEnum)
-    case List(SchemaObjectFieldType)
-    case NonNull(SchemaObjectFieldType)
+public protocol AllowedAsObjectField {
+    func isEqualToType(otherType: AllowedAsObjectField) -> Bool
+    func isSubtypeOf(hopefullySupertype: AllowedAsObjectField) -> Bool
+}
+
+extension AllowedAsObjectField {
+    public func isEqualToType(otherType: AllowedAsObjectField) -> Bool { return false }
+    public func isSubtypeOf(hopefullySupertype: AllowedAsObjectField) -> Bool { return false }
 }
 
 public struct SchemaObjectField: Named {
     public let name: ValidName
-    let type: SchemaObjectFieldType
+    let type: AllowedAsObjectField
     let description: String?
     let arguments: IdentitySet<SchemaInputValue>
     let resolve: (Any -> Any?)?
@@ -39,7 +39,7 @@ public struct SchemaObjectField: Named {
 
     public init(
         name: ValidName,
-        type: SchemaObjectFieldType,
+        type: AllowedAsObjectField,
         description: String? = nil,
         arguments: IdentitySet<SchemaInputValue> = [],
         resolve: (Any -> Any?)? = nil,

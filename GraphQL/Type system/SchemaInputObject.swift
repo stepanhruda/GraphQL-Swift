@@ -1,29 +1,14 @@
-public final class SchemaInputObjectType {
-    var fields: IdentitySet<SchemaInputValue> {
-        return undefined()
-    }
-}
-
-public indirect enum SchemaInputValueType {
-    case Scalar(SchemaScalarType)
-    case Enum(SchemaEnum)
-    case InputObject(SchemaInputObjectType)
-    case List(SchemaInputValueType)
-    case NonNull(SchemaInputValueType)
-}
-
-
 public struct SchemaInputValue: Named {
     public let name: ValidName
     public let description: String?
-    public let type: SchemaInputValueType
+    public let type: AllowedAsInputValue
     /// Perhaps it's possible to restrict the default based on type above?
     public let defaultValue: Any?
     public var value: Any?
 
     public init(
         name: ValidName,
-        type: SchemaInputValueType,
+        type: AllowedAsInputValue,
         description: String? = nil,
         defaultValue: Any? = nil) {
             self.name = name
@@ -31,4 +16,16 @@ public struct SchemaInputValue: Named {
             self.description = description
             self.defaultValue = defaultValue
     }
+}
+
+public protocol AllowedAsInputValue {
+    func isEqualToType(otherType: AllowedAsInputValue) -> Bool
+}
+
+extension AllowedAsInputValue {
+    public func isEqualToType(otherType: AllowedAsInputValue) -> Bool { return false }
+}
+
+public struct SchemaInputObject: AllowedAsInputValue, AllowedAsNonNull {
+    var fields: IdentitySet<SchemaInputValue>!
 }

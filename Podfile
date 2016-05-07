@@ -1,5 +1,10 @@
-link_with 'GraphQL'
-
 use_frameworks!
-pod 'Quick'
-pod 'Nimble'
+
+target :GraphQL do
+
+  target :GraphQLTests do
+    pod 'Quick'
+    pod 'Nimble'
+  end
+
+end

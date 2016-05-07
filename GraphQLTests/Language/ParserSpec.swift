@@ -19,11 +19,11 @@ final class ParserSpec: QuickSpec {
                     let document = try Parser.parse(Source(body: string))
 
                     expect(document.definitions.count) == 1
-                    expect(document.definitions.first is OperationDefinition).to(beTrue())
+                    expect(document.definitions.first is OperationDefinition) == true
                     let operationDefinition = document.definitions.first as! OperationDefinition
                     expect(operationDefinition.selectionSet.selections.count) == 1
 
-                    expect(operationDefinition.selectionSet.selections.first is Field).to(beTrue())
+                    expect(operationDefinition.selectionSet.selections.first is Field) == true
                     let nodeSelectionField = operationDefinition.selectionSet.selections.first as! Field
                     expect(nodeSelectionField.name.string) == "node"
                     expect(nodeSelectionField.selectionSet?.selections.count) == 2
@@ -31,15 +31,15 @@ final class ParserSpec: QuickSpec {
 
                     let idArgument = nodeSelectionField.arguments.first!
                     expect(idArgument.name.string) == "id"
-                    expect(idArgument.value is IntValue).to(beTrue())
+                    expect(idArgument.value is IntValue) == true
                     let idArgumentValue = idArgument.value as! IntValue
                     expect(idArgumentValue.value) == 4
 
-                    expect(nodeSelectionField.selectionSet?.selections.first is Field).to(beTrue())
+                    expect(nodeSelectionField.selectionSet?.selections.first is Field) == true
                     let idSelectionField = nodeSelectionField.selectionSet?.selections.first as! Field
                     expect(idSelectionField.name.string) == "id"
 
-                    expect(nodeSelectionField.selectionSet?.selections.last is Field).to(beTrue())
+                    expect(nodeSelectionField.selectionSet?.selections.last is Field) == true
                     let nameSelectionField = nodeSelectionField.selectionSet?.selections.last as! Field
                     expect(nameSelectionField.name.string) == "name"
 

@@ -11,7 +11,7 @@ protocol HasSubtree: Node {
     mutating func replaceChildAtIndex(index: Int, newValue: Node)
 }
 
-struct Document: HasSubtree {
+struct AbstractSyntaxTree: HasSubtree {
     var definitions: [Definition]
     let location: Location?
 

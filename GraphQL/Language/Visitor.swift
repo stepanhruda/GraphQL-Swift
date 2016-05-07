@@ -108,7 +108,7 @@ extension HasSubtree {
 
             if let childModifiedByVisit = childModifiedByVisit {
                 replaceChildAtIndex(currentIndex, newValue: childModifiedByVisit)
-                currentIndex++
+                currentIndex += 1
             } else {
                 removeChildAtIndex(currentIndex)
                 // Do not increase current index, everything has shifted down by one because the child was removed.

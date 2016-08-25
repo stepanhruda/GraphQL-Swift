@@ -1,4 +1,4 @@
-public struct SchemaInputValue: Named {
+public struct SchemaInputValue<Type>: Named {
     public let name: ValidName
     public let description: String?
     public let type: AllowedAsInputValue
@@ -18,6 +18,9 @@ public struct SchemaInputValue: Named {
     }
 }
 
+public protocol AnySchemaInputValue {}
+extension SchemaInputValue: AnySchemaInputValue {}
+
 public protocol AllowedAsInputValue {
     func isEqualToType(otherType: AllowedAsInputValue) -> Bool
 }
@@ -27,5 +30,5 @@ extension AllowedAsInputValue {
 }
 
 public struct SchemaInputObject: AllowedAsInputValue, AllowedAsNonNull {
-    var fields: IdentitySet<SchemaInputValue>!
+    var fields: IdentitySet<SchemaInputValue<Any>>!
 }

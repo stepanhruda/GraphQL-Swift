@@ -1,9 +1,3 @@
-enum Movie: String {
-    case NewHope = "NEWHOPE"
-    case EmpireStrikesBack = "EMPIRE"
-    case ReturnOfTheJedi = "JEDI"
-}
-
 let luke = Human(
     id: "1000",
     name: "Luke Skywalker",

@@ -14,40 +14,39 @@ public final class AnySchemaType: SchemaType {
 }
 
 public struct Schema {
-    let queryType: SchemaObject
-    let mutationType: SchemaObject?
-    let subscriptionType: SchemaObject?
+    let queryType: AnySchemaObject
+    let mutationType: AnySchemaObject?
+    let subscriptionType: AnySchemaObject?
     let directives: [SchemaDirective]
     let types: IdentitySet<AnySchemaType>
 
     public init(
-        queryType: SchemaObject,
-        mutationType: SchemaObject? = nil,
-        subscriptionType: SchemaObject? = nil,
+        queryType: AnySchemaObject,
+        mutationType: AnySchemaObject? = nil,
+        subscriptionType: AnySchemaObject? = nil,
         directives: [SchemaDirective] = [includeDirective, skipDirective]
         ) {
-            self.queryType = queryType
-            self.mutationType = mutationType
-            self.subscriptionType = subscriptionType
-            self.directives = directives
+        self.queryType = queryType
+        self.mutationType = mutationType
+        self.subscriptionType = subscriptionType
+        self.directives = directives
 
-            let optionalArray: [SchemaObject?] = [queryType, mutationType, subscriptionType]//, Introspection.schema]
-            let topLevelTypes = IdentitySet(values: optionalArray.flatMap { $0 }.map { AnySchemaType($0) })
-            self.types = Schema.collectAllTypesFrom(topLevelTypes)
+        let topLevelTypes = [queryType, mutationType, subscriptionType].flatMap { $0 } // + Introspection.schema
+        self.types = Schema.collectAllTypesFrom(topLevelTypes)
 
-            assertTypesConformToTheirInterfaces()
+        assertTypesConformToTheirInterfaces()
     }
 
-    static func collectAllTypesFrom(types: IdentitySet<AnySchemaType>) -> IdentitySet<AnySchemaType> {
+    static func collectAllTypesFrom(types: [AnySchemaObject]) -> IdentitySet<AnySchemaType> {
         return []
     }
 
     func assertTypesConformToTheirInterfaces() {
-        for type in types {
-            guard let objectType = type.wrappedType as? SchemaObject else { continue }
-            for interface in objectType.interfaces {
-                objectType.assertConformanceToInterface(interface)
-            }
-        }
+//        for type in types {
+//            guard let objectType = type.wrappedType as? SchemaObject else { continue }
+//            for interface in objectType.interfaces {
+//                objectType.assertConformanceToInterface(interface)
+//            }
+//        }
     }
 }

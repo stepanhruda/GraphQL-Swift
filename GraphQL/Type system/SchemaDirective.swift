@@ -1,7 +1,7 @@
 public struct SchemaDirective: Named {
     public let name: ValidName
     let description: String?
-    let arguments: IdentitySet<SchemaInputValue>
+    let arguments: IdentitySet<SchemaInputValue<Any>>
     let onOperation: Bool
     let onFragment: Bool
     let onField: Bool
@@ -9,7 +9,7 @@ public struct SchemaDirective: Named {
     public init(
         name: ValidName,
         description: String? = nil,
-        arguments: IdentitySet<SchemaInputValue>,
+        arguments: IdentitySet<SchemaInputValue<Any>>,
         onOperation: Bool = false,
         onFragment: Bool = false,
         onField: Bool = false) {

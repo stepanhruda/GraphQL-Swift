@@ -1,14 +1,16 @@
-protocol Character {
+import GraphQL
+
+protocol Character: GraphQLType {
     var id: String { get }
     var name: String { get }
     var friends: [String] { get }
-    var appearsIn: Set<Movie> { get }
+    var appearsIn: [Episode] { get }
 }
 
-enum Episode: Int {
-    case NewHope = 4
-    case EmpireStrikesBack = 5
-    case ReturnOfTheJedi = 6
+enum Episode: String, GraphQLType {
+    case NewHope = "NEWHOPE"
+    case EmpireStrikesBack = "EMPIRE"
+    case ReturnOfTheJedi = "JEDI"
 
     func getHero() -> Character {
         switch self {
@@ -16,6 +18,7 @@ enum Episode: Int {
         case .NewHope, .ReturnOfTheJedi: return artoo
         }
     }
+    
 }
 
 extension Character {
@@ -31,18 +34,18 @@ extension Character {
     }
 }
 
-struct Human: Character {
+struct Human: Character, GraphQLType {
     let id: String
     let name: String
     let friends: [String]
-    let appearsIn: Set<Movie>
+    let appearsIn: [Episode]
     let homePlanet: String?
 
     static func getById(id: String) -> Human? {
         return humanTable[id]
     }
 
-    init(id: String, name: String, friends: [String], appearsIn: Set<Movie>, homePlanet: String? = nil) {
+    init(id: String, name: String, friends: [String], appearsIn: [Episode], homePlanet: String? = nil) {
         self.id = id
         self.name = name
         self.friends = friends
@@ -51,18 +54,18 @@ struct Human: Character {
     }
 }
 
-struct Droid: Character {
+struct Droid: Character, GraphQLType {
     let id: String
     let name: String
     let friends: [String]
-    let appearsIn: Set<Movie>
+    let appearsIn: [Episode]
     let primaryFunction: String
 
     static func getById(id: String) -> Droid? {
         return droidTable[id]
     }
 
-    init(id: String, name: String, friends: [String], appearsIn: Set<Movie>, primaryFunction: String) {
+    init(id: String, name: String, friends: [String], appearsIn: [Episode], primaryFunction: String) {
         self.id = id
         self.name = name
         self.friends = friends
@@ -70,3 +73,5 @@ struct Droid: Character {
         self.primaryFunction = primaryFunction
     }
 }
+
+struct Query {}
